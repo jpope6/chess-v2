@@ -29,7 +29,7 @@ class Game:
 
             fen = self.getFenString()
 
-            self.board.draw()
+            self.board.draw(fen)
 
             # Update the display
             pygame.display.flip()
