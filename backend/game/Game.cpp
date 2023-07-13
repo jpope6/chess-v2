@@ -7,21 +7,17 @@ using namespace std;
 
 Game::Game() {
     board = Board();
-    system("python3 frontend/main.py");
-    this->play();
+    this->board.writeFenStringToFile(this->board.getFenString());
 }
 
 void Game::play() {
-    while (!this->getIsGameOver()) {
-        this->getBoard().printBoard();
-        cout << endl << "Enter a move: ";
-        string move;
-        cin >> move;
+    // Start the frontend
+    system("python3 frontend/main.py");
 
-        this->getBoard().writeFenStringToFile(move);
-
-        if (move == "exit") {
-            this->isGameOver = true;
-        }
+    while (this->board.getIsGameOver() == false) {
+        this->board.writeFenStringToFile(this->board.getFenString());
     }
+
+    // Reset the FEN string in the file
+    system("echo 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1' > text/fen.txt");
 }

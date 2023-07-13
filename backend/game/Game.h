@@ -6,7 +6,6 @@
 class Game {
     private:
         Board board;
-        bool isGameOver = false;
 
     public:
         // Game constructor
@@ -14,7 +13,6 @@ class Game {
 
         //Getters
         Board getBoard() { return board; }
-        bool getIsGameOver() { return isGameOver; }
 
         void play();
         

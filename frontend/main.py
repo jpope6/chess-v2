@@ -51,9 +51,12 @@ class Game:
             # Update the display
             pygame.display.update()
 
+        f = open("text/fen.txt", "w")
+        f.write("exit")
+        f.close()
 
-# Quit Pygame
-pygame.quit()
+        # Quit Pygame
+        pygame.quit()
 
 
 def main():

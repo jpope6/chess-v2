@@ -3,28 +3,30 @@
 
 #include <string>
 #include <map>
+#include <fstream>
 
 using namespace std;
 
 class Board {
     private:
         // FEN string for the starting position
-        string fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        map<char, string> piece_art = {
-            {'P', "♝"},
-            {'N', "♞"},
-            {'B', "♝"},
-            {'R', "♜"},
-            {'Q', "♛"},
-            {'K', "♚"},
-            {'p', "♙"},
-            {'n', "♘"},
-            {'b', "♗"},
-            {'r', "♖"},
-            {'q', "♕"},
-            {'k', "♔"},
-            {' ', "-"}
-        };
+        string fen_string;
+        bool isGameOver;
+        // map<char, string> piece_art = {
+        //     {'P', "♝"},
+        //     {'N', "♞"},
+        //     {'B', "♝"},
+        //     {'R', "♜"},
+        //     {'Q', "♛"},
+        //     {'K', "♚"},
+        //     {'p', "♙"},
+        //     {'n', "♘"},
+        //     {'b', "♗"},
+        //     {'r', "♖"},
+        //     {'q', "♕"},
+        //     {'k', "♔"},
+        //     {' ', "-"}
+        // };
 
     public:
         // 2D array to represent the board
@@ -35,7 +37,11 @@ class Board {
 
         // Getters
         string getFenString() { return fen_string; }
-        map<char, string> getPieceArt() { return piece_art; }
+        bool getIsGameOver() { return isGameOver; }
+        // map<char, string> getPieceArt() { return piece_art; }
+
+        // Setters
+        void setIsGameOver(bool isGameOver) { this->isGameOver = isGameOver; }
 
         void setBoardWithFenString(string fen_string);
         void writeFenStringToFile(string fen_string);

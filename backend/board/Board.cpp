@@ -6,8 +6,10 @@ using namespace std;
 
 // Board constructor
 Board::Board() {
-    this->setBoardWithFenString(this->getFenString());
+    this->fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    this->isGameOver = false;
     this->writeFenStringToFile(this->getFenString());
+    this->setBoardWithFenString(this->getFenString());
 }
 
 // Set the board with the FEN string
@@ -30,12 +32,12 @@ void Board::setBoardWithFenString(string fen_string) {
 
                 // Fill the empty squares with spaces
                 while (col < num) {
-                    this->board[row][col] = this->getPieceArt()[' ']; 
+                    // this->board[row][col] = this->getPieceArt()[' ']; 
                     col ++;
                 }
             } else {
                 // Fill the squares with the piece art
-                this->board[row][col] = this->getPieceArt()[c];
+                // this->board[row][col] = this->getPieceArt()[c];
                 col++;
             }
         }
@@ -43,9 +45,21 @@ void Board::setBoardWithFenString(string fen_string) {
     }
 }
 
-void Board::writeFenStringToFile(string fen_string) {
-    ofstream file;
+void Board::writeFenStringToFile(string fen_string) {    
+    fstream file;
+
     file.open("text/fen.txt");
+    
+    // read the line in the file
+    string fen = "";
+    getline(file, fen);
+
+    if (fen == "exit" && this->isGameOver == false) {
+        file.close();
+        this->isGameOver = true;
+    }
+
+
     file << fen_string;
     file.close();
 }
