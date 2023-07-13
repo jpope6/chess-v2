@@ -9,14 +9,23 @@ class Game:
         self.height = 800
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Chess")
+        self.clock = pygame.time.Clock()
 
+        self.fen_string = self.getFenString()
         self.board = Board(self.window)
+        self.board.populateBoardWithFen(self.fen_string)
 
     def getFenString(self):
-        f = open("fen.txt", "r")
+        f = open("text/fen.txt", "r")
         fen = f.read()
         f.close()
         return fen
+
+    def setFenString(self):
+        fen = self.board.updateFenString()
+        f = open("text/fen.txt", "w")
+        f.write(fen)
+        f.close()
 
     def play(self):
         self.window.fill((255, 255, 255))
@@ -26,13 +35,21 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.board.activePiece()
 
             fen = self.getFenString()
 
-            self.board.draw(fen)
+            # This way we don't have to parse the fen string every frame
+            if fen != self.fen_string:
+                self.fen_string = fen
+                self.board.populateBoardWithFen(self.fen_string)
 
+            self.board.draw()
+
+            self.clock.tick(60)
             # Update the display
-            pygame.display.flip()
+            pygame.display.update()
 
 
 # Quit Pygame

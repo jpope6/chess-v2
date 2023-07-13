@@ -45,7 +45,7 @@ void Board::setBoardWithFenString(string fen_string) {
 
 void Board::writeFenStringToFile(string fen_string) {
     ofstream file;
-    file.open("fen.txt");
+    file.open("text/fen.txt");
     file << fen_string;
     file.close();
 }
