@@ -1,6 +1,5 @@
 #include "Board.h"
 #include <iostream>
-#include <map>
 #include <fstream>
 
 using namespace std;
@@ -9,7 +8,6 @@ using namespace std;
 Board::Board() {
     this->setBoardWithFenString(this->getFenString());
     this->writeFenStringToFile(this->getFenString());
-    this->printBoard();
 }
 
 // Set the board with the FEN string
