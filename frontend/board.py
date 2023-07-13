@@ -121,29 +121,38 @@ class Board:
         return True
 
     # This can be done better
-    def activePiece(self):
+    def handleActivePiece(self):
         pos = pygame.mouse.get_pos()
 
         clicked_piece = self.getPiece(pos)
 
-        if self.active_piece and clicked_piece:
-            if self.isDifferentColor(clicked_piece, self.active_piece):
-                clicked_pos = self.getPiecePos(pos)
-                self.board[clicked_pos[0]][clicked_pos[1]] = self.active_piece
-                self.board[self.active_piece_pos[0]][self.active_piece_pos[1]] = None
-                self.active_piece = None
-                self.active_piece_pos = None
-            else:
-                self.active_piece = clicked_piece
-                self.active_piece_pos = self.getPiecePos(pos)
-        elif clicked_piece:
+        # User clicked on a piece to move it
+        if clicked_piece and not self.active_piece:
             self.active_piece = clicked_piece
             self.active_piece_pos = self.getPiecePos(pos)
-        else:
+            return
+
+        # User clicked on an empty square to move the piece
+        if self.active_piece and not clicked_piece:
             self.movePiece(pos)
             self.active_piece = None
             self.board[self.active_piece_pos[0]][self.active_piece_pos[1]] = None
             self.active_piece_pos = None
+            return
+
+        # User clicked on a piece of a different color, so we remove the piece that was clicked
+        if self.isDifferentColor(clicked_piece, self.active_piece):
+            clicked_pos = self.getPiecePos(pos)
+            self.board[clicked_pos[0]][clicked_pos[1]] = self.active_piece
+            self.board[self.active_piece_pos[0]][self.active_piece_pos[1]] = None
+            self.active_piece = None
+            self.active_piece_pos = None
+            return
+
+        # User clicked on a piece of the same color, so we change the active piece
+        self.active_piece = clicked_piece
+        self.active_piece_pos = self.getPiecePos(pos)
+        return
 
     def drawBoardSquares(self):
         for col in range(len(self.board)):

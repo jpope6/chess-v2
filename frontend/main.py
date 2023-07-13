@@ -36,7 +36,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.board.activePiece()
+                    self.board.handleActivePiece()
 
             fen = self.getFenString()
 
