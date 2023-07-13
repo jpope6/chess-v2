@@ -1,12 +1,14 @@
 #include "Board.h"
 #include <iostream>
 #include <map>
+#include <fstream>
 
 using namespace std;
 
 // Board constructor
 Board::Board() {
     this->setBoardWithFenString(this->getFenString());
+    this->writeFenStringToFile(this->getFenString());
     this->printBoard();
 }
 
@@ -41,6 +43,13 @@ void Board::setBoardWithFenString(string fen_string) {
         }
 
     }
+}
+
+void Board::writeFenStringToFile(string fen_string) {
+    ofstream file;
+    file.open("fen.txt");
+    file << fen_string;
+    file.close();
 }
 
 void Board::printBoard() {

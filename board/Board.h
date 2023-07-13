@@ -38,6 +38,7 @@ class Board {
         map<char, string> getPieceArt() { return piece_art; }
 
         void setBoardWithFenString(string fen_string);
+        void writeFenStringToFile(string fen_string);
         void printBoard();
 };
 
