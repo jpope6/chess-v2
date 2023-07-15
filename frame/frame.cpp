@@ -17,15 +17,22 @@ MyFrame::MyFrame()
     chessboard.setBoardWithFenString(chessboard.getFenString());
     LoadChessPieces();
 
+    mouseX = 0;
+    mouseY = 0;
+
+    selectedPieceRow = -1;
+    selectedPieceCol = -1;
+
     Bind(wxEVT_PAINT, &MyFrame::OnPaint, this);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
 
     Bind(wxEVT_LEFT_DOWN, &MyFrame::OnMouseLeftDown, this);
     Bind(wxEVT_LEFT_UP, &MyFrame::OnMouseLeftUp, this);
+    Bind(wxEVT_MOTION, &MyFrame::OnMouseMotion, this);
 }
 
 
-
+// Load the chess piece images
 void MyFrame::LoadChessPieces() {
     char pieceNames[] = {'b', 'k', 'n', 'p', 'q', 'r', 'B', 'K', 'N', 'P', 'Q', 'R'};
 
@@ -47,33 +54,60 @@ void MyFrame::LoadChessPieces() {
     }
 }
 
-void MyFrame::OnPaint(wxPaintEvent& event)
-{
+// Draw the piece that is being dragged by the mouse
+void MyFrame::drawActivePiece(wxPaintDC& dc) {
+    if (!pieceSelected) { return; }
+
+    if (selectedPieceRow == -1 || selectedPieceCol == -1) { return; }
+
+    char piece = chessboard.board[selectedPieceRow][selectedPieceCol];
+    dc.DrawBitmap(getChessPieceBitmaps()[piece], mouseX - 50, mouseY - 50, true);
+}
+
+// Draw all the other pieces
+void MyFrame::drawInactivePiece(wxPaintDC& dc, int row, int col, wxCoord squareSize) {
+    if (chessboard.board[row][col] == ' ') { return; }
+
+    if (pieceSelected && row == selectedPieceRow && col == selectedPieceCol) { return; }
+
+    wxCoord x = col * squareSize;
+    wxCoord y = row * squareSize;
+
+    dc.DrawBitmap(getChessPieceBitmaps()[chessboard.board[row][col]], x, y, true);
+}
+
+// Draw the squares of the chessboard
+void MyFrame::drawSquares(wxPaintDC& dc, int row, int col, wxSize sz, wxCoord squareSize) {
+    wxCoord x = col * squareSize;
+    wxCoord y = row * squareSize;
+
+    // Determine the color of the square based on row and column
+    wxColour squareColor = (row + col) % 2 == 0 ? wxColour(185, 182, 174) : wxColour(75, 115, 153);
+
+    dc.SetPen(*wxTRANSPARENT_PEN);
+    dc.SetBrush(squareColor);
+
+    // Draw the square
+    wxRect squareRect(x, y, squareSize, squareSize);
+    dc.DrawRectangle(squareRect);
+}
+
+// The main drawing function
+void MyFrame::OnPaint(wxPaintEvent& event) {
     wxPaintDC dc(this);
+
     wxSize sz = GetClientSize();
     wxCoord squareSize = sz.GetWidth() / 8; // Calculate the size of each square
     
     // Iterate over the chessboard squares
     for (int row = 0; row < 8; row++) {
         for (int col = 0; col < 8; col++) {
-            wxCoord x = col * squareSize;
-            wxCoord y = row * squareSize;
-            
-            // Determine the color of the square based on row and column
-            wxColour squareColor = (row + col) % 2 == 0 ? wxColour(185, 182, 174) : wxColour(75, 115, 153);
 
-            dc.SetPen(*wxTRANSPARENT_PEN);
-            dc.SetBrush(squareColor);
-            
-            // Draw the square
-            wxRect squareRect(x, y, squareSize, squareSize);
-            dc.DrawRectangle(squareRect);
-
-            // Draw the chess piece
-            if (chessboard.board[row][col] != ' ') {
-                dc.DrawBitmap(getChessPieceBitmaps()[chessboard.board[row][col]], x, y, true);
-            }
+            drawSquares(dc, row, col, sz, squareSize);
+            drawInactivePiece(dc, row, col, squareSize);
         }
+
+        drawActivePiece(dc);
     }
 }
 
@@ -111,6 +145,15 @@ void MyFrame::OnMouseLeftUp(wxMouseEvent& event) {
         selectedPieceRow = -1;
         selectedPieceCol = -1;
         
+    }
+}
+
+void MyFrame::OnMouseMotion(wxMouseEvent& event) {
+    if (pieceSelected) {
+        mouseX = event.GetX();
+        mouseY = event.GetY();
+
+        Refresh();
     }
 }
  
