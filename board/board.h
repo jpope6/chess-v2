@@ -2,6 +2,9 @@
 #define BOARD_H
 
 #include <string>
+#include <vector>
+
+#include "../pieces/pawn/pawn.h"
 
 using namespace std;
 
@@ -10,7 +13,7 @@ class Board {
   string fen_string;
 
  public:
-  char board[8][8];
+  vector<vector<Piece*>> board;
 
   // Constructor and destructor
   Board(/* args */);

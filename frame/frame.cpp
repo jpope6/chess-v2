@@ -63,7 +63,7 @@ void MyFrame::drawActivePiece(wxPaintDC &dc) {
   }
 
   // Draw the piece at the mouse's location
-  char piece = chessboard.board[selectedPieceRow][selectedPieceCol];
+  char piece = chessboard.board[selectedPieceRow][selectedPieceCol]->getName();
   dc.DrawBitmap(getChessPieceBitmaps()[piece], mouseX - 50, mouseY - 50, true);
 }
 
@@ -71,7 +71,7 @@ void MyFrame::drawActivePiece(wxPaintDC &dc) {
 void MyFrame::drawInactivePiece(wxPaintDC &dc, int row, int col,
                                 wxCoord squareSize) {
   // Don't draw a piece if there is no piece at the current square
-  if (chessboard.board[row][col] == ' ') {
+  if (chessboard.board[row][col] == nullptr) {
     return;
   }
 
@@ -85,7 +85,8 @@ void MyFrame::drawInactivePiece(wxPaintDC &dc, int row, int col,
   wxCoord y = row * squareSize;
 
   // Draw the piece
-  dc.DrawBitmap(getChessPieceBitmaps()[chessboard.board[row][col]], x, y, true);
+  dc.DrawBitmap(getChessPieceBitmaps()[chessboard.board[row][col]->getName()],
+                x, y, true);
 }
 
 // Draw the squares of the chessboard
@@ -141,7 +142,7 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
 
   // Check if a piece is present at the clicked position
   // If so, save the row and column of the piece
-  if (chessboard.board[clickedRow][clickedCol] != ' ') {
+  if (chessboard.board[clickedRow][clickedCol] != nullptr) {
     pieceSelected = true;
     selectedPieceRow = clickedRow;
     selectedPieceCol = clickedCol;

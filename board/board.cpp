@@ -3,6 +3,7 @@
 Board::Board() {
   // Starting FEN string
   fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+  board = vector<vector<Piece*>>(8, vector<Piece*>(8, nullptr));
 }
 
 Board::~Board() {}
@@ -17,22 +18,27 @@ void Board::setBoardWithFenString(string fen_string) {
 
   // Loop through the FEN board string
   for (char c : fen_board) {
-
-    if (c == '/') { // If we reach the end of a row
+    if (c == '/') {  // If we reach the end of a row
       row++;
       col = 0;
     } else {
-      if (isdigit(c)) { // If the character is a number
+      if (isdigit(c)) {  // If the character is a number
         int num = c - '0';
 
         // Fill the empty squares with spaces
         while (col < num) {
-          board[row][col] = ' ';
+          board[row][col] = nullptr;
           col++;
         }
       } else {
-        // Fill the squares with the piece
-        board[row][col] = c;
+        if (c == 'P' || c == 'p') {
+          Piece* pawn = new Pawn(row, col, c, isupper(c));
+          board[row][col] = pawn;
+        } else {
+          Piece* piece = new Piece(row, col, c, isupper(c));
+          board[row][col] = piece;
+        }
+
         col++;
       }
     }
@@ -49,7 +55,7 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
 
   // Move the piece
   board[to_row][to_col] = board[from_row][from_col];
-  board[from_row][from_col] = ' ';
+  board[from_row][from_col] = nullptr;
 
   return true;
 }
