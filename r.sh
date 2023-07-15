@@ -7,3 +7,4 @@ echo "Running main.cpp"
 ./main
 
 echo "Execution completed successfully."
+rm main

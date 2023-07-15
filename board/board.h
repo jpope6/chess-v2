@@ -7,19 +7,20 @@ using namespace std;
 
 class Board {
     private:
-        /* data */
         string fen_string;
     public:
         char board[8][8];
 
+        // Constructor and destructor
         Board(/* args */);
         ~Board();
 
         // Getters
         string getFenString() { return fen_string; }
 
+        // Member functions
         void setBoardWithFenString(string fen_string);
-        void movePiece(int from_row, int from_col, int to_row, int to_col);
+        bool movePiece(int from_row, int from_col, int to_row, int to_col);
     };
 
 #endif

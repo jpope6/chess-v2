@@ -1,6 +1,7 @@
 #include "board.h"
 
-Board::Board(/* args */) {
+Board::Board() {
+    // Starting FEN string
     fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
 }
 
@@ -31,7 +32,7 @@ void Board::setBoardWithFenString(string fen_string) {
                     col ++;
                 }
             } else {
-                // Fill the squares with the piece art
+                // Fill the squares with the piece
                 board[row][col] = c;
                 col++;
             }
@@ -40,7 +41,17 @@ void Board::setBoardWithFenString(string fen_string) {
     }
 }
 
-void Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
+// Move a piece on the board
+// Return true if the move was successful, false otherwise
+bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
+    // If moving to the same square, return false
+    if (from_row == to_row && from_col == to_col) {
+        return false;
+    }
+
+    // Move the piece
     board[to_row][to_col] = board[from_row][from_col];
     board[from_row][from_col] = ' ';
+
+    return true;
 }

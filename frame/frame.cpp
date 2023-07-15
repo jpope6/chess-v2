@@ -1,14 +1,8 @@
 #include "frame.h"
 
 #include <iostream>
-#include <wx/image.h>
 
 using namespace std;
-
-enum
-{
-    ID_Hello = 1
-};
 
 MyFrame::MyFrame()
     : wxFrame(nullptr, wxID_ANY, "Chess", wxDefaultPosition, wxSize(800, 837))
@@ -54,36 +48,48 @@ void MyFrame::LoadChessPieces() {
     }
 }
 
+
 // Draw the piece that is being dragged by the mouse
 void MyFrame::drawActivePiece(wxPaintDC& dc) {
+    // If no piece is selected, don't draw anything
     if (!pieceSelected) { return; }
 
+    // If row and col have not been set, don't draw anything
     if (selectedPieceRow == -1 || selectedPieceCol == -1) { return; }
 
+    // Draw the piece at the mouse's location
     char piece = chessboard.board[selectedPieceRow][selectedPieceCol];
     dc.DrawBitmap(getChessPieceBitmaps()[piece], mouseX - 50, mouseY - 50, true);
 }
 
+
 // Draw all the other pieces
 void MyFrame::drawInactivePiece(wxPaintDC& dc, int row, int col, wxCoord squareSize) {
+    // Don't draw a piece if there is no piece at the current square
     if (chessboard.board[row][col] == ' ') { return; }
 
+    // Don't draw the selected piece
     if (pieceSelected && row == selectedPieceRow && col == selectedPieceCol) { return; }
 
+    // get the x and y coordinates of the square
     wxCoord x = col * squareSize;
     wxCoord y = row * squareSize;
 
+    // Draw the piece
     dc.DrawBitmap(getChessPieceBitmaps()[chessboard.board[row][col]], x, y, true);
 }
 
+
 // Draw the squares of the chessboard
 void MyFrame::drawSquares(wxPaintDC& dc, int row, int col, wxSize sz, wxCoord squareSize) {
+    // get the x and y coordinates of the square
     wxCoord x = col * squareSize;
     wxCoord y = row * squareSize;
 
     // Determine the color of the square based on row and column
     wxColour squareColor = (row + col) % 2 == 0 ? wxColour(185, 182, 174) : wxColour(75, 115, 153);
 
+    // Set the pen and brush
     dc.SetPen(*wxTRANSPARENT_PEN);
     dc.SetBrush(squareColor);
 
@@ -92,8 +98,10 @@ void MyFrame::drawSquares(wxPaintDC& dc, int row, int col, wxSize sz, wxCoord sq
     dc.DrawRectangle(squareRect);
 }
 
+
 // The main drawing function
 void MyFrame::OnPaint(wxPaintEvent& event) {
+    // Create a device context
     wxPaintDC dc(this);
 
     wxSize sz = GetClientSize();
@@ -111,16 +119,21 @@ void MyFrame::OnPaint(wxPaintEvent& event) {
     }
 }
 
+
+// Select a piece when the mouse is clicked
 void MyFrame::OnMouseLeftDown(wxMouseEvent& event) {
+    // Get the mouse coordinates
     int mouseX = event.GetX();
     int mouseY = event.GetY();
 
     int squareSize = GetClientSize().GetWidth() / 8;
 
+    // Get the row and column of the clicked square
     int clickedCol = mouseX / squareSize;
     int clickedRow = mouseY / squareSize;
 
     // Check if a piece is present at the clicked position
+    // If so, save the row and column of the piece
     if (chessboard.board[clickedRow][clickedCol] != ' ') {
         pieceSelected = true;
         selectedPieceRow = clickedRow;
@@ -128,19 +141,25 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent& event) {
     }
 }
 
+
+// Move the selected piece to the released position
 void MyFrame::OnMouseLeftUp(wxMouseEvent& event) {
     if (pieceSelected) {
+        // Get the mouse coordinates
         int mouseX = event.GetX();
         int mouseY = event.GetY();
 
         int squareSize = GetClientSize().GetWidth() / 8;
 
+        // Get the row and column of the released square
         int releasedCol = mouseX / squareSize;
         int releasedRow = mouseY / squareSize;
 
+        // Move the piece
         chessboard.movePiece(selectedPieceRow, selectedPieceCol, releasedRow, releasedCol);
         Refresh();
 
+        // Reset the selected piece data
         pieceSelected = false;
         selectedPieceRow = -1;
         selectedPieceCol = -1;
@@ -148,16 +167,21 @@ void MyFrame::OnMouseLeftUp(wxMouseEvent& event) {
     }
 }
 
+
+// Move the selected piece with the mouse
 void MyFrame::OnMouseMotion(wxMouseEvent& event) {
     if (pieceSelected) {
+        // Get the mouse coordinates
         mouseX = event.GetX();
         mouseY = event.GetY();
 
+        // Redraw the frame
         Refresh();
     }
 }
+
  
-void MyFrame::OnExit(wxCommandEvent& event)
-{
+// Exit the application
+void MyFrame::OnExit(wxCommandEvent& event) {
     Close(true);
 }
