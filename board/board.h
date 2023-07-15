@@ -6,21 +6,22 @@
 using namespace std;
 
 class Board {
-    private:
-        string fen_string;
-    public:
-        char board[8][8];
+ private:
+  string fen_string;
 
-        // Constructor and destructor
-        Board(/* args */);
-        ~Board();
+ public:
+  char board[8][8];
 
-        // Getters
-        string getFenString() { return fen_string; }
+  // Constructor and destructor
+  Board(/* args */);
+  ~Board();
 
-        // Member functions
-        void setBoardWithFenString(string fen_string);
-        bool movePiece(int from_row, int from_col, int to_row, int to_col);
-    };
+  // Getters
+  string getFenString() { return fen_string; }
+
+  // Member functions
+  void setBoardWithFenString(string fen_string);
+  bool movePiece(int from_row, int from_col, int to_row, int to_col);
+};
 
 #endif
