@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../pieces/pawn/pawn.h"
+#include "../pieces/rook/rook.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ class Board {
   vector<vector<Piece*>> board;
 
   // Constructor and destructor
-  Board(/* args */);
+  Board();
   ~Board();
 
   // Getters

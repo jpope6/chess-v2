@@ -34,14 +34,19 @@ void Board::setBoardWithFenString(string fen_string) {
         Piece* piece = nullptr;
 
         // Create a piece based on the character
-        if (c == 'P' || c == 'p') {
-          piece = new Pawn(row, col, c);
+        switch (c) {
+          case 'P':
+          case 'p':
+            piece = new Pawn(row, col, c);
+            break;
 
-          piece->updateLegalMoves(board);
-        } else {
-          // Piece* piece = new Piece(row, col, c, isupper(c));
-          // board[row][col] = piece;
-          int x = 5;
+          case 'R':
+          case 'r':
+            piece = new Rook(row, col, c);
+            break;
+
+          default:
+            break;
         }
 
         board[row][col] = piece;
