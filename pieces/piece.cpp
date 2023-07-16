@@ -19,7 +19,8 @@ bool Piece::isSameColor(Piece* other) {
 // Color offset so that white pieces move up and black pieces move down
 int Piece::colorOffset() { return this->is_white ? -1 : 1; }
 
-// Returns if the move is legal
+// Given a row and column, if the move is in the list of potential moves,
+// than it is a legal move. return true, else return false
 bool Piece::isLegalMove(int row, int col) {
   for (const auto& move : this->potential_moves) {
     if (move.row == row && move.col == col) {
