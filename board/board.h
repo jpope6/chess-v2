@@ -5,7 +5,11 @@
 #include <string>
 #include <vector>
 
+#include "../pieces/bishop/bishop.h"
+#include "../pieces/king/king.h"
+#include "../pieces/knight/knight.h"
 #include "../pieces/pawn/pawn.h"
+#include "../pieces/queen/queen.h"
 #include "../pieces/rook/rook.h"
 
 using namespace std;

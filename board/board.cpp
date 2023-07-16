@@ -45,6 +45,26 @@ void Board::setBoardWithFenString(string fen_string) {
             piece = new Rook(row, col, c);
             break;
 
+          case 'B':
+          case 'b':
+            piece = new Bishop(row, col, c);
+            break;
+
+          case 'N':
+          case 'n':
+            piece = new Knight(row, col, c);
+            break;
+
+          case 'Q':
+          case 'q':
+            piece = new Queen(row, col, c);
+            break;
+
+          case 'K':
+          case 'k':
+            piece = new King(row, col, c);
+            break;
+
           default:
             break;
         }
