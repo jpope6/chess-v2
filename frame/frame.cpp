@@ -9,6 +9,7 @@ MyFrame::MyFrame()
   chessboard = Board();
   chessboard.setBoardWithFenString(chessboard.getFenString());
   LoadChessPieces();
+  selectedPiece = nullptr;
 
   mouseX = 0;
   mouseY = 0;
@@ -100,7 +101,6 @@ void MyFrame::drawSquares(wxPaintDC &dc, int row, int col, wxSize sz,
   wxColour squareColor =
       (row + col) % 2 == 0 ? wxColour(185, 182, 174) : wxColour(75, 115, 153);
 
-  // Set the pen and brush
   dc.SetPen(*wxTRANSPARENT_PEN);
   dc.SetBrush(squareColor);
 
@@ -146,6 +146,7 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
     pieceSelected = true;
     selectedPieceRow = clickedRow;
     selectedPieceCol = clickedCol;
+    selectedPiece = chessboard.board[clickedRow][clickedCol];
   }
 }
 

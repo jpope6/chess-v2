@@ -30,6 +30,7 @@ class MyFrame : public wxFrame {
   map<char, wxBitmap> chessPieceBitmaps;
   Board chessboard;
   bool pieceSelected;
+  Piece *selectedPiece;
   int selectedPieceRow;
   int selectedPieceCol;
 

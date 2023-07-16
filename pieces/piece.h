@@ -47,6 +47,7 @@ class Piece {
   // Methods
   bool isSameColor(Piece* other);
   int colorOffset();
+  bool isLegalMove(int row, int col);
 };
 
 #endif
