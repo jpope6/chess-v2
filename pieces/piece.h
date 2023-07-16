@@ -1,6 +1,7 @@
 #ifndef PIECE_H
 #define PIECE_H
 
+#include <cctype>
 #include <vector>
 
 using namespace std;
@@ -16,12 +17,12 @@ class Piece {
   int col;
   char name;
   bool is_white;
+  bool has_moved;
   vector<Move> potential_moves;  // [row, col
-  vector<Move> legal_moves;
 
  public:
   // Constructor and destructor
-  Piece(int row, int col, char name, bool is_white);
+  Piece(int row, int col, char name);
   ~Piece();
 
   // Getters
@@ -29,24 +30,23 @@ class Piece {
   int getCol() { return col; }
   char getName() { return name; }
   bool getIsWhite() { return is_white; }
+  bool getHasMoved() { return has_moved; }
   vector<Move> getPotentialMoves() { return potential_moves; }
-  vector<Move> getLegalMoves() { return legal_moves; }
 
   // Setters
   void setRow(int row) { this->row = row; }
   void setCol(int col) { this->col = col; }
+  void setHasMoved(bool has_moved) { this->has_moved = has_moved; }
   void setPotentialMoves(vector<Move> potential_moves) {
     this->potential_moves = potential_moves;
   }
-  void setLegalMoves(vector<Move> legal_moves) {
-    this->legal_moves = legal_moves;
-  }
 
   // Virtual Methods
-  // virtual void updateLegalMoves();
+  virtual vector<Move> updateLegalMoves(vector<vector<Piece*>> board) = 0;
 
   // Methods
   bool isSameColor(Piece* other);
+  int colorOffset();
 };
 
 #endif

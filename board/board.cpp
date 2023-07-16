@@ -31,14 +31,20 @@ void Board::setBoardWithFenString(string fen_string) {
           col++;
         }
       } else {
+        Piece* piece = nullptr;
+
+        // Create a piece based on the character
         if (c == 'P' || c == 'p') {
-          Piece* pawn = new Pawn(row, col, c, isupper(c));
-          board[row][col] = pawn;
+          piece = new Pawn(row, col, c);
+
+          piece->updateLegalMoves(board);
         } else {
-          Piece* piece = new Piece(row, col, c, isupper(c));
-          board[row][col] = piece;
+          // Piece* piece = new Piece(row, col, c, isupper(c));
+          // board[row][col] = piece;
+          int x = 5;
         }
 
+        board[row][col] = piece;
         col++;
       }
     }
@@ -53,9 +59,25 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
     return false;
   }
 
-  // Move the piece
-  board[to_row][to_col] = board[from_row][from_col];
-  board[from_row][from_col] = nullptr;
+  // Check if the move is in the pieces legal moves
+  vector<Move> legal_moves = board[from_row][from_col]->updateLegalMoves(board);
 
-  return true;
+  // If the move is not legal, return false
+  for (Move move : legal_moves) {
+    if (move.row == to_row && move.col == to_col) {
+      // Store the new row and column
+      board[from_row][from_col]->setRow(to_row);
+      board[from_row][from_col]->setCol(to_col);
+
+      board[from_row][from_col]->setHasMoved(true);
+
+      // Move the piece
+      board[to_row][to_col] = board[from_row][from_col];
+      board[from_row][from_col] = nullptr;
+
+      return true;
+    }
+  }
+
+  return false;
 }

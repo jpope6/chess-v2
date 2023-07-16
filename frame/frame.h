@@ -1,17 +1,18 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include <map>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/wx.h>
+
+#include <map>
 
 #include "../board/board.h"
 
 using namespace std;
 
 class MyFrame : public wxFrame {
-public:
+ public:
   // Constructor
   MyFrame();
 
@@ -24,7 +25,7 @@ public:
   // Member functions
   void LoadChessPieces();
 
-private:
+ private:
   // variables
   map<char, wxBitmap> chessPieceBitmaps;
   Board chessboard;

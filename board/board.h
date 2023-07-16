@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -24,6 +25,7 @@ class Board {
 
   // Member functions
   void setBoardWithFenString(string fen_string);
+  void setLegalMoves();
   bool movePiece(int from_row, int from_col, int to_row, int to_col);
 };
 
