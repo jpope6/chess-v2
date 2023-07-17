@@ -144,8 +144,8 @@ void MyFrame::OnPaint(wxPaintEvent &event) {
 // Select a piece when the mouse is clicked
 void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
   // Get the mouse coordinates
-  int mouseX = event.GetX();
-  int mouseY = event.GetY();
+  mouseX = event.GetX();
+  mouseY = event.GetY();
 
   int squareSize = GetClientSize().GetWidth() / 8;
 
@@ -163,6 +163,8 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
 
     // Update the legal moves of the selected piece
     selectedPiece->updateLegalMoves(chessboard.board);
+
+    Refresh();
   }
 }
 

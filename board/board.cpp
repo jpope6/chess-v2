@@ -25,7 +25,7 @@ void Board::setBoardWithFenString(string fen_string) {
       if (isdigit(c)) {  // If the character is a number
         int num = c - '0';
 
-        // Fill the empty squares with spaces
+        // Fill the empty squares with nullptr
         while (col < num) {
           board[row][col] = nullptr;
           col++;
@@ -100,7 +100,6 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
   // Check if the move is in the pieces legal moves
   vector<Move> legal_moves = board[from_row][from_col]->getPotentialMoves();
 
-  // If the move is not legal, return false
   for (Move move : legal_moves) {
     if (move.row == to_row && move.col == to_col) {
       // Store the new row and column
@@ -113,9 +112,11 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
       board[to_row][to_col] = board[from_row][from_col];
       board[from_row][from_col] = nullptr;
 
+      // Move is legal, return true
       return true;
     }
   }
 
+  // Move is illegal, return false
   return false;
 }
