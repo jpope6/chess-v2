@@ -9,7 +9,9 @@ MyFrame::MyFrame()
   chessboard = Board();
   chessboard.setBoardWithFenString(chessboard.getFenString());
   LoadChessPieces();
+
   selectedPiece = nullptr;
+  pieceSelected = false;
 
   mouseX = 0;
   mouseY = 0;
@@ -97,11 +99,22 @@ void MyFrame::drawSquares(wxPaintDC &dc, int row, int col, wxSize sz,
   wxCoord x = col * squareSize;
   wxCoord y = row * squareSize;
 
-  // Determine the color of the square based on row and column
   wxColour squareColor =
       (row + col) % 2 == 0 ? wxColour(185, 182, 174) : wxColour(75, 115, 153);
 
   dc.SetPen(*wxTRANSPARENT_PEN);
+
+  // Determine the color of the square based on row and column
+  if (row == selectedPieceRow && col == selectedPieceCol) {
+    squareColor = wxColour(255, 255, 0);
+    dc.SetPen(wxPen(wxColour(0, 0, 0), 2));
+  }
+
+  if (pieceSelected && selectedPiece->isLegalMove(row, col)) {
+    squareColor = wxColour(191, 227, 180);
+    dc.SetPen(wxPen(wxColour(0, 0, 0), 2));
+  }
+
   dc.SetBrush(squareColor);
 
   // Draw the square
@@ -143,10 +156,13 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
   // Check if a piece is present at the clicked position
   // If so, save the row and column of the piece
   if (chessboard.board[clickedRow][clickedCol] != nullptr) {
+    selectedPiece = chessboard.board[clickedRow][clickedCol];
     pieceSelected = true;
     selectedPieceRow = clickedRow;
     selectedPieceCol = clickedCol;
-    selectedPiece = chessboard.board[clickedRow][clickedCol];
+
+    // Update the legal moves of the selected piece
+    selectedPiece->updateLegalMoves(chessboard.board);
   }
 }
 
@@ -182,7 +198,7 @@ void MyFrame::OnMouseMotion(wxMouseEvent &event) {
     mouseX = event.GetX();
     mouseY = event.GetY();
 
-    // Redraw the frame
+    // Refresh the screen
     Refresh();
   }
 }

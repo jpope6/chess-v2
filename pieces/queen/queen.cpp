@@ -12,6 +12,7 @@ vector<Move> Queen::updateLegalMoves(vector<vector<Piece*>> board) {
 
   // Check if queen can move forward
   this->checkPieceInPath(board, row, col, legal_moves);
+  this->setPotentialMoves(legal_moves);
 
   return legal_moves;
 }

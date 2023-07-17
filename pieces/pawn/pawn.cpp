@@ -17,6 +17,8 @@ vector<Move> Pawn::updateLegalMoves(vector<vector<Piece*>> board) {
   // Check if pawn can capture
   this->checkPawnCapture(board, row, col, legal_moves);
 
+  this->setPotentialMoves(legal_moves);
+
   return legal_moves;
 }
 

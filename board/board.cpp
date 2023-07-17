@@ -76,6 +76,19 @@ void Board::setBoardWithFenString(string fen_string) {
   }
 }
 
+// Update legal moves for all pieces
+void Board::updateLegalMoves() {
+  for (int row = 0; row < 8; row++) {
+    for (int col = 0; col < 8; col++) {
+      // If there is a piece at the current square
+      if (board[row][col] != nullptr) {
+        // Update the legal moves for the piece
+        board[row][col]->updateLegalMoves(board);
+      }
+    }
+  }
+}
+
 // Move a piece on the board
 // Return true if the move was successful, false otherwise
 bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
@@ -85,7 +98,7 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
   }
 
   // Check if the move is in the pieces legal moves
-  vector<Move> legal_moves = board[from_row][from_col]->updateLegalMoves(board);
+  vector<Move> legal_moves = board[from_row][from_col]->getPotentialMoves();
 
   // If the move is not legal, return false
   for (Move move : legal_moves) {

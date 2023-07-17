@@ -30,7 +30,7 @@ class Board {
 
   // Member functions
   void setBoardWithFenString(string fen_string);
-  void setLegalMoves();
+  void updateLegalMoves();
   bool movePiece(int from_row, int from_col, int to_row, int to_col);
 };
 

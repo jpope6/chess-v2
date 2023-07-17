@@ -12,6 +12,7 @@ vector<Move> Bishop::updateLegalMoves(vector<vector<Piece*>> board) {
 
   // Check if bishop can move forward
   this->checkPieceInPath(board, row, col, legal_moves);
+  this->setPotentialMoves(legal_moves);
 
   return legal_moves;
 }
