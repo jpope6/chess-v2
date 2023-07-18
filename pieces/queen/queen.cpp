@@ -18,7 +18,7 @@ vector<Move> Queen::updateLegalMoves(vector<vector<Piece*>>& board) {
 }
 
 // Helper function to check if there is a piece in the way of the queen
-void Queen::checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
+void Queen::checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
                              vector<Move>& legal_moves) {
   // Check if queen can move up
   for (int i = row + 1; i < 8; i++) {

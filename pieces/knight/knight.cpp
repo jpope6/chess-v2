@@ -18,7 +18,7 @@ vector<Move> Knight::updateLegalMoves(vector<vector<Piece*>>& board) {
 }
 
 // Helper function to check if there is a piece in the way of the knight
-void Knight::checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
+void Knight::checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
                               vector<Move>& legal_moves) {
   // Knights can move 2 spaces in one direction and 1 space in the other
   int offsets[8][2] = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},

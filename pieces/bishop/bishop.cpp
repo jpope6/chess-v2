@@ -18,7 +18,7 @@ vector<Move> Bishop::updateLegalMoves(vector<vector<Piece*>>& board) {
 }
 
 // Helper function to check if there is a piece in the way of the bishop
-void Bishop::checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
+void Bishop::checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
                               vector<Move>& legal_moves) {
   // Check if bishop can move up and right
   for (int i = row + 1, j = col + 1; i < 8 && j < 8; i++, j++) {

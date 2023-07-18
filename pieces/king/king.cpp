@@ -18,7 +18,7 @@ vector<Move> King::updateLegalMoves(vector<vector<Piece*>>& board) {
 }
 
 // Helper function to check if there is a piece in the way of the king
-void King::checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
+void King::checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
                             vector<Move>& legal_moves) {
   // King can move one space in any direction
   int offsets[8][2] = {{1, 0},  {1, 1},   {0, 1},  {-1, 1},

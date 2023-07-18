@@ -23,7 +23,7 @@ vector<Move> Pawn::updateLegalMoves(vector<vector<Piece*>>& board) {
 }
 
 // Helper function to check if there is a piece in the way of the pawn
-void Pawn::checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
+void Pawn::checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
                             vector<Move>& legal_moves) {
   int color_offset = this->colorOffset();
 
@@ -49,7 +49,7 @@ void Pawn::checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
 }
 
 // Helper function to check if pawn can capture
-void Pawn::checkPawnCapture(vector<vector<Piece*>> board, int row, int col,
+void Pawn::checkPawnCapture(vector<vector<Piece*>>& board, int row, int col,
                             vector<Move>& legal_moves) {
   int color_offset = this->colorOffset();
 
@@ -78,7 +78,7 @@ void Pawn::checkPawnCapture(vector<vector<Piece*>> board, int row, int col,
 }
 
 // TODO: Check if pawn can en passant
-void Pawn::checkEnPassant(vector<vector<Piece*>> board, int row, int col,
+void Pawn::checkEnPassant(vector<vector<Piece*>>& board, int row, int col,
                           vector<Move>& legal_moves) {
   int x = 5;
 }

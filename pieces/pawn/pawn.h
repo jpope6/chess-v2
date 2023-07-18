@@ -14,11 +14,11 @@ class Pawn : public Piece {
   vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) override;
 
   // Methods
-  void checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
+  void checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
                         vector<Move>& legal_moves);
-  void checkPawnCapture(vector<vector<Piece*>> board, int row, int col,
+  void checkPawnCapture(vector<vector<Piece*>>& board, int row, int col,
                         vector<Move>& legal_moves);
-  void checkEnPassant(vector<vector<Piece*>> board, int row, int col,
+  void checkEnPassant(vector<vector<Piece*>>& board, int row, int col,
                       vector<Move>& legal_moves);
 };
 
