@@ -18,6 +18,8 @@ class Pawn : public Piece {
                         vector<Move>& legal_moves);
   void checkPawnCapture(vector<vector<Piece*>> board, int row, int col,
                         vector<Move>& legal_moves);
+  void checkEnPassant(vector<vector<Piece*>> board, int row, int col,
+                      vector<Move>& legal_moves);
 };
 
 #endif

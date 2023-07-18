@@ -102,14 +102,17 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
 
   for (Move move : legal_moves) {
     if (move.row == to_row && move.col == to_col) {
-      // Store the new row and column
-      board[from_row][from_col]->setRow(to_row);
-      board[from_row][from_col]->setCol(to_col);
+      Piece* piece = board[from_row][from_col];
 
-      board[from_row][from_col]->setHasMoved(true);
+      // Store the new row and column
+      piece->setRow(to_row);
+      piece->setCol(to_col);
+
+      piece->setHasMoved(true);
+      last_piece_moved = board[from_row][from_col];
 
       // Move the piece
-      board[to_row][to_col] = board[from_row][from_col];
+      board[to_row][to_col] = piece;
       board[from_row][from_col] = nullptr;
 
       // Move is legal, return true

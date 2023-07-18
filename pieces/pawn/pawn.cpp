@@ -76,3 +76,9 @@ void Pawn::checkPawnCapture(vector<vector<Piece*>> board, int row, int col,
     }
   }
 }
+
+// TODO: Check if pawn can en passant
+void Pawn::checkEnPassant(vector<vector<Piece*>> board, int row, int col,
+                          vector<Move>& legal_moves) {
+  int x = 5;
+}
