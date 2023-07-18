@@ -4,7 +4,7 @@
 Bishop::Bishop(int row, int col, char name) : Piece(row, col, name) {}
 
 // Returns all legal moves for the bishop
-vector<Move> Bishop::updateLegalMoves(vector<vector<Piece*>> board) {
+vector<Move> Bishop::updateLegalMoves(vector<vector<Piece*>>& board) {
   vector<Move> legal_moves = {};
 
   int row = this->getRow();

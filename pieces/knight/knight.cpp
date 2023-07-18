@@ -4,7 +4,7 @@
 Knight::Knight(int row, int col, char name) : Piece(row, col, name) {}
 
 // Returns all legal moves for the knight
-vector<Move> Knight::updateLegalMoves(vector<vector<Piece*>> board) {
+vector<Move> Knight::updateLegalMoves(vector<vector<Piece*>>& board) {
   vector<Move> legal_moves = {};
 
   int row = this->getRow();

@@ -4,7 +4,7 @@
 Pawn::Pawn(int row, int col, char name) : Piece(row, col, name) {}
 
 // Returns all legal moves for the pawn
-vector<Move> Pawn::updateLegalMoves(vector<vector<Piece*>> board) {
+vector<Move> Pawn::updateLegalMoves(vector<vector<Piece*>>& board) {
   vector<Move> legal_moves = {};
   int color_offset = this->colorOffset();
 

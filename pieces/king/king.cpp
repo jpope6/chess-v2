@@ -4,7 +4,7 @@
 King::King(int row, int col, char name) : Piece(row, col, name) {}
 
 // Returns all legal moves for the king
-vector<Move> King::updateLegalMoves(vector<vector<Piece*>> board) {
+vector<Move> King::updateLegalMoves(vector<vector<Piece*>>& board) {
   vector<Move> legal_moves = {};
 
   int row = this->getRow();

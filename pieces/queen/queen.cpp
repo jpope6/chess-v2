@@ -4,7 +4,7 @@
 Queen::Queen(int row, int col, char name) : Piece(row, col, name) {}
 
 // Returns all legal moves for the queen
-vector<Move> Queen::updateLegalMoves(vector<vector<Piece*>> board) {
+vector<Move> Queen::updateLegalMoves(vector<vector<Piece*>>& board) {
   vector<Move> legal_moves = {};
 
   int row = this->getRow();

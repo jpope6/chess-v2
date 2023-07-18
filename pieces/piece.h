@@ -31,7 +31,7 @@ class Piece {
   char getName() { return name; }
   bool getIsWhite() { return is_white; }
   bool getHasMoved() { return has_moved; }
-  vector<Move> getPotentialMoves() { return potential_moves; }
+  vector<Move>& getPotentialMoves() { return potential_moves; }
 
   // Setters
   void setRow(int row) { this->row = row; }
@@ -42,7 +42,7 @@ class Piece {
   }
 
   // Virtual Methods
-  virtual vector<Move> updateLegalMoves(vector<vector<Piece*>> board) = 0;
+  virtual vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) = 0;
 
   // Methods
   bool isSameColor(Piece* other);

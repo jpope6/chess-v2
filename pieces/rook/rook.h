@@ -11,7 +11,7 @@ class Rook : public Piece {
   ~Rook();
 
   // Virtual Methods
-  vector<Move> updateLegalMoves(vector<vector<Piece*>> board) override;
+  vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) override;
 
   // Methods
   void checkPieceInPath(vector<vector<Piece*>> board, int row, int col,
