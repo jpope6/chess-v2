@@ -109,7 +109,6 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
       piece->setCol(to_col);
 
       piece->setHasMoved(true);
-      last_piece_moved = board[from_row][from_col];
 
       // Move the piece
       board[to_row][to_col] = piece;
