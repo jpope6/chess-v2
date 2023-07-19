@@ -79,7 +79,25 @@ void Pawn::checkPawnCapture(vector<vector<Piece*>>& board, int row, int col,
 }
 
 // TODO: Check if pawn can en passant
-void Pawn::checkEnPassant(vector<vector<Piece*>>& board, int row, int col,
-                          vector<Move>& legal_moves) {
-  int x = 5;
+void Pawn::updateEnPassant(vector<vector<Piece*>>& board, int row, int col) {
+  // Check if pawn is in the correct row
+  if (this->getRow() != 3 && this->getRow() != 4) {
+    return;
+  }
+
+  // Check if on the right column
+  if (abs(this->getCol() - col) != 1) {
+    return;
+  }
+
+  int color_offset = this->colorOffset();
+
+  // Check if this piece is the same color as the en passant square
+  if (this->isSameColor(board[row + (1 * color_offset)][col])) {
+    return;
+  }
+
+  // Add the move to the list of legal moves
+  vector<Move>& legal_moves = this->getPotentialMoves();
+  legal_moves.push_back({row, col});
 }

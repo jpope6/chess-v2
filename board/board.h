@@ -49,6 +49,7 @@ class Board {
   void addMoveToStack(int from_row, int from_col, int to_row, int to_col,
                       Piece* piece);
   bool setEnPassantSquare();
+  void removeEnPassantPiece();
 };
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef PAWN_H
 #define PAWN_H
 
+#include <cmath>
+
 #include "../piece.h"
 
 class Pawn : public Piece {
@@ -18,8 +20,7 @@ class Pawn : public Piece {
                         vector<Move>& legal_moves);
   void checkPawnCapture(vector<vector<Piece*>>& board, int row, int col,
                         vector<Move>& legal_moves);
-  void checkEnPassant(vector<vector<Piece*>>& board, int row, int col,
-                      vector<Move>& legal_moves);
+  void updateEnPassant(vector<vector<Piece*>>& board, int row, int col);
 };
 
 #endif

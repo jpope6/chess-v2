@@ -13,6 +13,10 @@ Piece::~Piece() {}
 
 // Helper function to check if other piece is same color as this piece
 bool Piece::isSameColor(Piece* other) {
+  if (other == nullptr) {
+    return false;
+  }
+
   return this->is_white == other->getIsWhite();
 }
 

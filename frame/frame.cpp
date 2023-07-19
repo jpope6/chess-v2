@@ -1,7 +1,5 @@
 #include "frame.h"
 
-#include <iostream>
-
 using namespace std;
 
 MyFrame::MyFrame()
@@ -163,6 +161,17 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
 
     // Update the legal moves of the selected piece
     selectedPiece->updateLegalMoves(chessboard.board);
+
+    // If Piece is a pawn, update the legal moves for en passant
+    if (selectedPiece->isPawn()) {
+      int en_passant_row = chessboard.getEnPassantRow();
+      int en_passant_col = chessboard.getEnPassantCol();
+
+      if (en_passant_row != -1 && en_passant_col != -1) {
+        Pawn *pawn = dynamic_cast<Pawn *>(selectedPiece);
+        pawn->updateEnPassant(chessboard.board, en_passant_row, en_passant_col);
+      }
+    }
 
     Refresh();
   }

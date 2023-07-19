@@ -1,7 +1,5 @@
 #include "board.h"
 
-#include <iostream>
-
 Board::Board() {
   // Starting FEN string
   fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
@@ -116,6 +114,12 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
 
       piece->setHasMoved(true);
 
+      // Handle en passant capture
+      if (piece->isPawn() && from_col != to_col &&
+          board[to_row][to_col] == nullptr) {
+        removeEnPassantPiece();
+      }
+
       // Move the piece
       board[to_row][to_col] = piece;
       board[from_row][from_col] = nullptr;
@@ -123,6 +127,7 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
       // Add the move to the stack
       addMoveToStack(from_row, from_col, to_row, to_col, piece);
 
+      // If there is no en passant square, reset it
       if (!setEnPassantSquare()) {
         en_passant_row = -1;
         en_passant_col = -1;
@@ -158,15 +163,19 @@ bool Board::setEnPassantSquare() {
     if (abs(move.from_row - move.to_row) == 2) {
       int color_offset = move.piece->colorOffset();
 
-      en_passant_row = move.to_row + (1 * color_offset);
+      en_passant_row = move.to_row - (1 * color_offset);
       en_passant_col = move.to_col;
-
-      cout << "En passant square: " << en_passant_row << ", " << en_passant_col
-           << endl;
 
       return true;
     }
   }
 
   return false;
+}
+
+void Board::removeEnPassantPiece() {
+  // check if the last move was an en passant capture
+  ChessMove move = getLastMove();
+
+  board[move.to_row][move.to_col] = nullptr;
 }
