@@ -1,9 +1,15 @@
 #include "board.h"
 
+#include <iostream>
+
 Board::Board() {
   // Starting FEN string
   fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
   board = vector<vector<Piece*>>(8, vector<Piece*>(8, nullptr));
+  move_stack = stack<ChessMove>();
+
+  en_passant_row = -1;
+  en_passant_col = -1;
 }
 
 Board::~Board() {}
@@ -114,11 +120,53 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
       board[to_row][to_col] = piece;
       board[from_row][from_col] = nullptr;
 
+      // Add the move to the stack
+      addMoveToStack(from_row, from_col, to_row, to_col, piece);
+
+      if (!setEnPassantSquare()) {
+        en_passant_row = -1;
+        en_passant_col = -1;
+      }
+
       // Move is legal, return true
       return true;
     }
   }
 
   // Move is illegal, return false
+  return false;
+}
+
+void Board::addMoveToStack(int from_row, int from_col, int to_row, int to_col,
+                           Piece* piece) {
+  ChessMove move;
+  move.from_row = from_row;
+  move.from_col = from_col;
+  move.to_row = to_row;
+  move.to_col = to_col;
+  move.piece = piece;
+
+  move_stack.push(move);
+}
+
+bool Board::setEnPassantSquare() {
+  // Get the last move
+  ChessMove move = getLastMove();
+
+  // If the last move was a pawn moving two squares
+  if (move.piece->isPawn()) {
+    if (abs(move.from_row - move.to_row) == 2) {
+      int color_offset = move.piece->colorOffset();
+
+      en_passant_row = move.to_row + (1 * color_offset);
+      en_passant_col = move.to_col;
+
+      cout << "En passant square: " << en_passant_row << ", " << en_passant_col
+           << endl;
+
+      return true;
+    }
+  }
+
   return false;
 }

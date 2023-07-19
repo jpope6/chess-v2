@@ -5,11 +5,12 @@ Pawn::Pawn(int row, int col, char name) : Piece(row, col, name) {}
 
 // Returns all legal moves for the pawn
 vector<Move> Pawn::updateLegalMoves(vector<vector<Piece*>>& board) {
-  vector<Move> legal_moves = {};
   int color_offset = this->colorOffset();
 
   int row = this->getRow();
   int col = this->getCol();
+
+  vector<Move> legal_moves = {};
 
   // Check if pawn can move forward
   this->checkPieceInPath(board, row, col, legal_moves);

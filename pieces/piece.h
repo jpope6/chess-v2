@@ -18,7 +18,7 @@ class Piece {
   char name;
   bool is_white;
   bool has_moved;
-  vector<Move> potential_moves;  // [row, col
+  vector<Move> potential_moves;
 
  public:
   // Constructor and destructor
@@ -48,6 +48,7 @@ class Piece {
   bool isSameColor(Piece* other);
   int colorOffset();
   bool isLegalMove(int row, int col);
+  bool isPawn();
 };
 
 #endif

@@ -29,3 +29,7 @@ bool Piece::isLegalMove(int row, int col) {
   }
   return false;
 }
+
+bool Piece::isPawn() {
+  return this->getName() == 'p' || this->getName() == 'P';
+}
