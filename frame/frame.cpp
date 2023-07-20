@@ -173,6 +173,9 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
       }
     }
 
+    // Handle castling rights
+    handleCastlingRights();
+
     Refresh();
   }
 }
@@ -216,3 +219,21 @@ void MyFrame::OnMouseMotion(wxMouseEvent &event) {
 
 // Exit the application
 void MyFrame::OnExit(wxCommandEvent &event) { Close(true); }
+
+void MyFrame::handleCastlingRights() {
+  if (chessboard.whiteCanCastleKingSide()) {
+    chessboard.getWhiteKing()->getPotentialMoves().push_back({7, 6});
+  }
+
+  if (chessboard.whiteCanCastleQueenSide()) {
+    chessboard.getWhiteKing()->getPotentialMoves().push_back({7, 2});
+  }
+
+  if (chessboard.blackCanCastleKingSide()) {
+    chessboard.getBlackKing()->getPotentialMoves().push_back({0, 6});
+  }
+
+  if (chessboard.blackCanCastleQueenSide()) {
+    chessboard.getBlackKing()->getPotentialMoves().push_back({0, 2});
+  }
+}

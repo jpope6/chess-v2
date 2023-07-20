@@ -24,6 +24,7 @@ class MyFrame : public wxFrame {
 
   // Member functions
   void LoadChessPieces();
+  void handleCastlingRights();
 
  private:
   // variables

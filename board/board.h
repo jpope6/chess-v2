@@ -29,6 +29,9 @@ class Board {
   int en_passant_row;
   int en_passant_col;
 
+  Piece* white_king;
+  Piece* black_king;
+
  public:
   vector<vector<Piece*>> board;
 
@@ -41,6 +44,8 @@ class Board {
   ChessMove getLastMove() { return move_stack.top(); }
   int getEnPassantRow() { return en_passant_row; }
   int getEnPassantCol() { return en_passant_col; }
+  Piece* getWhiteKing() { return white_king; }
+  Piece* getBlackKing() { return black_king; }
 
   // Member functions
   void setBoardWithFenString(string fen_string);
@@ -51,6 +56,13 @@ class Board {
                       Piece* piece);
   bool setEnPassantSquare();
   void removeEnPassantPiece();
+
+  bool canCastle(Piece* king, int row, int king_col, int rook_col);
+  bool whiteCanCastleKingSide();
+  bool whiteCanCastleQueenSide();
+  bool blackCanCastleKingSide();
+  bool blackCanCastleQueenSide();
+  void moveRookOnCastle();
 };
 
 #endif

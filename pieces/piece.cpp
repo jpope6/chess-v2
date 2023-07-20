@@ -37,3 +37,7 @@ bool Piece::isLegalMove(int row, int col) {
 bool Piece::isPawn() {
   return this->getName() == 'p' || this->getName() == 'P';
 }
+
+bool Piece::isKing() {
+  return this->getName() == 'k' || this->getName() == 'K';
+}

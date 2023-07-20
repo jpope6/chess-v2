@@ -50,6 +50,7 @@ class Piece {
   int colorOffset();
   bool isLegalMove(int row, int col);
   bool isPawn();
+  bool isKing();
 };
 
 #endif

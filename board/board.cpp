@@ -8,6 +8,9 @@ Board::Board() {
 
   en_passant_row = -1;
   en_passant_col = -1;
+
+  white_king = nullptr;
+  black_king = nullptr;
 }
 
 Board::~Board() {}
@@ -62,8 +65,11 @@ Piece* Board::createPiece(char c, int row, int col) {
     case 'q':
       return new Queen(row, col, c);
     case 'K':
+      white_king = new King(row, col, c);
+      return white_king;
     case 'k':
-      return new King(row, col, c);
+      black_king = new King(row, col, c);
+      return black_king;
     default:
       return nullptr;  // Invalid piece character
   }
@@ -106,6 +112,11 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
     if (!setEnPassantSquare()) {
       en_passant_row = -1;
       en_passant_col = -1;
+    }
+
+    // If the king castled, move the rook
+    if (piece->isKing() && abs(from_col - to_col) == 2) {
+      moveRookOnCastle();
     }
 
     // Move is legal, return true
@@ -174,4 +185,79 @@ void Board::removeEnPassantPiece() {
   ChessMove move = getLastMove();
   delete board[move.to_row][move.to_col];
   board[move.to_row][move.to_col] = nullptr;
+}
+
+bool Board::canCastle(Piece* king, int row, int king_col, int rook_col) {
+  // if the king is not on the board yet
+  if (king == nullptr) {
+    return false;
+  }
+
+  // if the king has moved
+  if (king->getHasMoved()) {
+    return false;
+  }
+
+  // Direction of castling
+  int direction = rook_col > king_col ? 1 : -1;
+  int start = king_col + direction;
+  int end = rook_col;
+
+  // if there is a piece in the way of the king
+  for (int col = start; col != end; col += direction) {
+    if (board[row][col] != nullptr) {
+      return false;
+    }
+  }
+
+  // if the rook was captured
+  if (board[row][rook_col] == nullptr) {
+    return false;
+  }
+
+  // if the rook has moved
+  if (board[row][rook_col]->getHasMoved()) {
+    return false;
+  }
+
+  // TODO: if the king is in check
+
+  // TODO: if the king moves through check
+
+  return true;
+}
+
+// Check if white can castle king side
+bool Board::whiteCanCastleKingSide() { return canCastle(white_king, 7, 4, 7); }
+
+bool Board::whiteCanCastleQueenSide() { return canCastle(white_king, 7, 4, 0); }
+
+bool Board::blackCanCastleKingSide() { return canCastle(black_king, 0, 4, 7); }
+
+bool Board::blackCanCastleQueenSide() { return canCastle(black_king, 0, 4, 0); }
+
+// Move the rook on castling
+void Board::moveRookOnCastle() {
+  ChessMove move = getLastMove();
+
+  // If the king moved to the right two squares
+  if (move.to_col - move.from_col == 2) {
+    // Move the rook to the left of the king
+    board[move.to_row][move.to_col - 1] = board[move.to_row][move.to_col + 1];
+
+    // Update the rooks column
+    Piece* rook = board[move.to_row][move.to_col - 1];
+    rook->setCol(move.to_col - 1);
+
+    board[move.to_row][move.to_col + 1] = nullptr;
+  } else if (move.to_col - move.from_col == -2) {
+    // Move the rook to the right of the king
+    board[move.to_row][move.to_col + 1] = board[move.to_row][move.to_col - 2];
+
+    // Update the rooks column
+    Piece* rook = board[move.to_row][move.to_col + 1];
+    rook->setCol(move.to_col + 1);
+
+    board[move.to_row][move.to_col - 2] = nullptr;
+  }
 }

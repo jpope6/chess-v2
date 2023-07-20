@@ -102,6 +102,5 @@ void Pawn::updateEnPassant(vector<vector<Piece*>>& board, int row, int col) {
   }
 
   // Add the move to the list of legal moves
-  vector<Move>& legal_moves = this->getPotentialMoves();
-  legal_moves.push_back({row, col});
+  this->getPotentialMoves().push_back({row, col});
 }
