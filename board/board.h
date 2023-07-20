@@ -46,6 +46,7 @@ class Board {
   void setBoardWithFenString(string fen_string);
   Piece* createPiece(char c, int row, int col);
   bool movePiece(int from_row, int from_col, int to_row, int to_col);
+  void handleMove(int from_row, int from_col, int to_row, int to_col);
   void addMoveToStack(int from_row, int from_col, int to_row, int to_col,
                       Piece* piece);
   bool setEnPassantSquare();

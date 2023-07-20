@@ -96,9 +96,8 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
       removeEnPassantPiece();
     }
 
-    // Move the piece
-    board[to_row][to_col] = piece;
-    board[from_row][from_col] = nullptr;
+    // Handle capture and moves
+    handleMove(from_row, from_col, to_row, to_col);
 
     // Add the move to the stack
     addMoveToStack(from_row, from_col, to_row, to_col, piece);
@@ -115,6 +114,25 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
 
   // Move is illegal, return false
   return false;
+}
+
+// Handle capture and moves
+void Board::handleMove(int from_row, int from_col, int to_row, int to_col) {
+  Piece* piece = board[from_row][from_col];
+
+  // If there is no piece at the from square, return false
+  if (piece == nullptr) {
+    return;
+  }
+
+  // If the move is a capture
+  if (board[to_row][to_col] != nullptr) {
+    delete board[to_row][to_col];
+  }
+
+  // Move the piece
+  board[to_row][to_col] = piece;
+  board[from_row][from_col] = nullptr;
 }
 
 // Add the last move onto the stack
@@ -154,6 +172,6 @@ bool Board::setEnPassantSquare() {
 void Board::removeEnPassantPiece() {
   // check if the last move was an en passant capture
   ChessMove move = getLastMove();
-
+  delete board[move.to_row][move.to_col];
   board[move.to_row][move.to_col] = nullptr;
 }

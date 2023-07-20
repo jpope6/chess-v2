@@ -30,6 +30,7 @@ class Piece {
   int getCol() { return col; }
   char getName() { return name; }
   bool getIsWhite() { return is_white; }
+  bool getIsBlack() { return !is_white; }
   bool getHasMoved() { return has_moved; }
   vector<Move>& getPotentialMoves() { return potential_moves; }
 

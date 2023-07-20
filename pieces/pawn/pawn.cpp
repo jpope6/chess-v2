@@ -81,7 +81,11 @@ void Pawn::checkPawnCapture(vector<vector<Piece*>>& board, int row, int col,
 // TODO: Check if pawn can en passant
 void Pawn::updateEnPassant(vector<vector<Piece*>>& board, int row, int col) {
   // Check if pawn is in the correct row
-  if (this->getRow() != 3 && this->getRow() != 4) {
+  if (this->getIsWhite() && this->getRow() != 3) {
+    return;
+  }
+
+  if (this->getIsBlack() && this->getRow() != 4) {
     return;
   }
 
