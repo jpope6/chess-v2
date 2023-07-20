@@ -44,7 +44,7 @@ class Board {
 
   // Member functions
   void setBoardWithFenString(string fen_string);
-  void updateLegalMoves();
+  Piece* createPiece(char c, int row, int col);
   bool movePiece(int from_row, int from_col, int to_row, int to_col);
   void addMoveToStack(int from_row, int from_col, int to_row, int to_col,
                       Piece* piece);

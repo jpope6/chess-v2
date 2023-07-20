@@ -35,43 +35,7 @@ void Board::setBoardWithFenString(string fen_string) {
           col++;
         }
       } else {
-        Piece* piece = nullptr;
-
-        // Create a piece based on the character
-        switch (c) {
-          case 'P':
-          case 'p':
-            piece = new Pawn(row, col, c);
-            break;
-
-          case 'R':
-          case 'r':
-            piece = new Rook(row, col, c);
-            break;
-
-          case 'B':
-          case 'b':
-            piece = new Bishop(row, col, c);
-            break;
-
-          case 'N':
-          case 'n':
-            piece = new Knight(row, col, c);
-            break;
-
-          case 'Q':
-          case 'q':
-            piece = new Queen(row, col, c);
-            break;
-
-          case 'K':
-          case 'k':
-            piece = new King(row, col, c);
-            break;
-
-          default:
-            break;
-        }
+        Piece* piece = createPiece(c, row, col);
 
         board[row][col] = piece;
         col++;
@@ -80,16 +44,28 @@ void Board::setBoardWithFenString(string fen_string) {
   }
 }
 
-// Update legal moves for all pieces
-void Board::updateLegalMoves() {
-  for (int row = 0; row < 8; row++) {
-    for (int col = 0; col < 8; col++) {
-      // If there is a piece at the current square
-      if (board[row][col] != nullptr) {
-        // Update the legal moves for the piece
-        board[row][col]->updateLegalMoves(board);
-      }
-    }
+Piece* Board::createPiece(char c, int row, int col) {
+  switch (c) {
+    case 'P':
+    case 'p':
+      return new Pawn(row, col, c);
+    case 'R':
+    case 'r':
+      return new Rook(row, col, c);
+    case 'B':
+    case 'b':
+      return new Bishop(row, col, c);
+    case 'N':
+    case 'n':
+      return new Knight(row, col, c);
+    case 'Q':
+    case 'q':
+      return new Queen(row, col, c);
+    case 'K':
+    case 'k':
+      return new King(row, col, c);
+    default:
+      return nullptr;  // Invalid piece character
   }
 }
 
@@ -101,47 +77,47 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
     return false;
   }
 
-  // Check if the move is in the pieces legal moves
-  vector<Move> legal_moves = board[from_row][from_col]->getPotentialMoves();
+  Piece* piece = board[from_row][from_col];
 
-  for (Move move : legal_moves) {
-    if (move.row == to_row && move.col == to_col) {
-      Piece* piece = board[from_row][from_col];
+  // If there is no piece at the from square, return false
+  if (piece == nullptr) {
+    return false;
+  }
 
-      // Store the new row and column
-      piece->setRow(to_row);
-      piece->setCol(to_col);
+  if (piece->isLegalMove(to_row, to_col)) {
+    piece->setRow(to_row);
+    piece->setCol(to_col);
 
-      piece->setHasMoved(true);
+    piece->setHasMoved(true);
 
-      // Handle en passant capture
-      if (piece->isPawn() && from_col != to_col &&
-          board[to_row][to_col] == nullptr) {
-        removeEnPassantPiece();
-      }
-
-      // Move the piece
-      board[to_row][to_col] = piece;
-      board[from_row][from_col] = nullptr;
-
-      // Add the move to the stack
-      addMoveToStack(from_row, from_col, to_row, to_col, piece);
-
-      // If there is no en passant square, reset it
-      if (!setEnPassantSquare()) {
-        en_passant_row = -1;
-        en_passant_col = -1;
-      }
-
-      // Move is legal, return true
-      return true;
+    // If the pawn does an en passant capture
+    if (piece->isPawn() && from_col != to_col &&
+        board[to_row][to_col] == nullptr) {
+      removeEnPassantPiece();
     }
+
+    // Move the piece
+    board[to_row][to_col] = piece;
+    board[from_row][from_col] = nullptr;
+
+    // Add the move to the stack
+    addMoveToStack(from_row, from_col, to_row, to_col, piece);
+
+    // If there is no en passant square, reset it
+    if (!setEnPassantSquare()) {
+      en_passant_row = -1;
+      en_passant_col = -1;
+    }
+
+    // Move is legal, return true
+    return true;
   }
 
   // Move is illegal, return false
   return false;
 }
 
+// Add the last move onto the stack
 void Board::addMoveToStack(int from_row, int from_col, int to_row, int to_col,
                            Piece* piece) {
   ChessMove move;
@@ -154,6 +130,7 @@ void Board::addMoveToStack(int from_row, int from_col, int to_row, int to_col,
   move_stack.push(move);
 }
 
+// If the last move was a pawn moving two squares, set the en passant square
 bool Board::setEnPassantSquare() {
   // Get the last move
   ChessMove move = getLastMove();
@@ -173,6 +150,7 @@ bool Board::setEnPassantSquare() {
   return false;
 }
 
+// If the last move was an en passant capture, remove the captured piece
 void Board::removeEnPassantPiece() {
   // check if the last move was an en passant capture
   ChessMove move = getLastMove();
