@@ -6,16 +6,8 @@
 class Rook : public Piece {
  private:
  public:
-  // Constructor and destructor
-  Rook(int row, int col, char name);
-  ~Rook();
-
-  // Virtual Methods
-  vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) override;
-
-  // Methods
-  void checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
-                        vector<Move>& legal_moves);
+  // Constructor
+  Rook(int quare, char piece);
 };
 
 #endif

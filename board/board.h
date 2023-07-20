@@ -1,9 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include <stack>
+#include <memory>
 #include <string>
-#include <vector>
 
 #include "../pieces/bishop/bishop.h"
 #include "../pieces/king/king.h"
@@ -14,55 +13,30 @@
 
 using namespace std;
 
-struct ChessMove {
-  int from_row;
-  int from_col;
-  int to_row;
-  int to_col;
-  Piece* piece;
+struct Move {
+  int from_square;
+  int to_square;
 };
 
 class Board {
  private:
   string fen_string;
-  stack<ChessMove> move_stack;
-  int en_passant_row;
-  int en_passant_col;
+  Piece* board[64];
 
   Piece* white_king;
   Piece* black_king;
 
  public:
-  vector<vector<Piece*>> board;
-
-  // Constructor and destructor
+  // Constructor
   Board();
-  ~Board();
 
   // Getters
   string getFenString() { return fen_string; }
-  ChessMove getLastMove() { return move_stack.top(); }
-  int getEnPassantRow() { return en_passant_row; }
-  int getEnPassantCol() { return en_passant_col; }
-  Piece* getWhiteKing() { return white_king; }
-  Piece* getBlackKing() { return black_king; }
+  Piece** getBoard() { return board; }
 
   // Member functions
   void setBoardWithFenString(string fen_string);
   Piece* createPiece(char c, int row, int col);
-  bool movePiece(int from_row, int from_col, int to_row, int to_col);
-  void handleMove(int from_row, int from_col, int to_row, int to_col);
-  void addMoveToStack(int from_row, int from_col, int to_row, int to_col,
-                      Piece* piece);
-  bool setEnPassantSquare();
-  void removeEnPassantPiece();
-
-  bool canCastle(Piece* king, int row, int king_col, int rook_col);
-  bool whiteCanCastleKingSide();
-  bool whiteCanCastleQueenSide();
-  bool blackCanCastleKingSide();
-  bool blackCanCastleQueenSide();
-  void moveRookOnCastle();
 };
 
 #endif
