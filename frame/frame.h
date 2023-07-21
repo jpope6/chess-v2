@@ -6,42 +6,48 @@
 #include <wx/wx.h>
 
 #include <map>
-#include <string>
 
 #include "../board/board.h"
 
 using namespace std;
 
-class Frame : public wxFrame {
- private:
-  map<char, wxBitmap> chessPieceBitmaps;
-  Board chessboard;
-
-  int mouse_x;
-  int mouse_y;
-
-  bool is_piece_selected;
-  int selected_piece_square;
-
+class MyFrame : public wxFrame {
  public:
   // Constructor
-  Frame();
+  MyFrame();
+
+  // Getters
+  map<char, wxBitmap> &getChessPieceBitmaps() { return chessPieceBitmaps; }
+  Board &getBoard() { return chessboard; }
+  int getSelectedPieceRow() { return selectedPieceRow; }
+  int getSelectedPieceCol() { return selectedPieceCol; }
 
   // Member functions
-  void loadChessPieces();
+  void LoadChessPieces();
+  void handleCastlingRights();
 
-  // Drawing functions
-  void onPaint(wxPaintEvent &event);
-  void drawSquares(wxPaintDC &dc, int row, int col, wxCoord square_size);
-  void drawInactivePiece(wxPaintDC &dc, int row, int col, wxCoord square_size);
+ private:
+  // variables
+  map<char, wxBitmap> chessPieceBitmaps;
+  Board chessboard;
+  bool pieceSelected;
+  Piece *selectedPiece;
+  int selectedPieceRow;
+  int selectedPieceCol;
+
+  int mouseX;
+  int mouseY;
+
+  // Member functions
   void drawActivePiece(wxPaintDC &dc);
-
-  // Mouse events
-  void onMouseLeftDown(wxMouseEvent &event);
-  void onMouseMotion(wxMouseEvent &event);
-
-  // Exit
-  void onExit(wxCommandEvent &event);
+  void drawInactivePiece(wxPaintDC &dc, int row, int col, wxCoord squareSize);
+  void drawSquares(wxPaintDC &dc, int row, int col, wxSize size,
+                   wxCoord squareSize);
+  void OnPaint(wxPaintEvent &event);
+  void OnExit(wxCommandEvent &event);
+  void OnMouseLeftDown(wxMouseEvent &event);
+  void OnMouseLeftUp(wxMouseEvent &event);
+  void OnMouseMotion(wxMouseEvent &event);
 
   DECLARE_EVENT_TABLE()
 };

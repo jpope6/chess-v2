@@ -2,32 +2,55 @@
 #define PIECE_H
 
 #include <cctype>
-#include <map>
+#include <vector>
 
 using namespace std;
 
-enum Color { WHITE = 0, BLACK = 1 };
-
-enum Type { PAWN = 0, KNIGHT = 1, BISHOP = 2, ROOK = 3, QUEEN = 4, KING = 5 };
-
-enum Column { A = 0, B = 1, C = 2, D = 3, E = 4, F = 5, G = 6, H = 7 };
+struct Move {
+  int row;
+  int col;
+};
 
 class Piece {
  private:
   int row;
   int col;
-  int square;
   char name;
-  Color color;
-  Type piece_type;
+  bool is_white;
   bool has_moved;
+  vector<Move> potential_moves;
 
  public:
-  // Constructor
-  Piece(int square, char piece);
+  // Constructor and destructor
+  Piece(int row, int col, char name);
+  ~Piece();
 
   // Getters
+  int getRow() { return row; }
+  int getCol() { return col; }
   char getName() { return name; }
+  bool getIsWhite() { return is_white; }
+  bool getIsBlack() { return !is_white; }
+  bool getHasMoved() { return has_moved; }
+  vector<Move>& getPotentialMoves() { return potential_moves; }
+
+  // Setters
+  void setRow(int row) { this->row = row; }
+  void setCol(int col) { this->col = col; }
+  void setHasMoved(bool has_moved) { this->has_moved = has_moved; }
+  void setPotentialMoves(vector<Move> potential_moves) {
+    this->potential_moves = potential_moves;
+  }
+
+  // Virtual Methods
+  virtual vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) = 0;
+
+  // Methods
+  bool isSameColor(Piece* other);
+  int colorOffset();
+  bool isLegalMove(int row, int col);
+  bool isPawn();
+  bool isKing();
 };
 
 #endif

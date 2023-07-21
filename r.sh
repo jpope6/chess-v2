@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Compiling frame.cpp"
 g++ -c frame/frame.cpp `wx-config --cxxflags --libs`
 
