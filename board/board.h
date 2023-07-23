@@ -25,15 +25,18 @@ struct ChessMove {
 class Board {
  private:
   string fen_string;
+  Color turn;
+
   stack<ChessMove> move_stack;
   int en_passant_row;
   int en_passant_col;
 
   Piece* white_king;
   Piece* black_king;
+  vector<Piece*> pieces_attacking_king;
 
-  vector<Move> white_moves;
-  vector<Move> black_moves;
+  vector<ChessMove> white_moves;
+  vector<ChessMove> black_moves;
 
  public:
   vector<vector<Piece*>> board;
@@ -44,19 +47,22 @@ class Board {
 
   // Getters
   string getFenString() { return fen_string; }
+  Color getTurn() { return turn; }
   ChessMove getLastMove() { return move_stack.top(); }
   int getEnPassantRow() { return en_passant_row; }
   int getEnPassantCol() { return en_passant_col; }
   Piece* getWhiteKing() { return white_king; }
   Piece* getBlackKing() { return black_king; }
-  vector<Move> getWhiteMoves() { return white_moves; }
-  vector<Move> getBlackMoves() { return black_moves; }
+  vector<ChessMove> getWhiteMoves() { return white_moves; }
+  vector<ChessMove> getBlackMoves() { return black_moves; }
 
   // Member functions
   void setBoardWithFenString(string fen_string);
   Piece* createPiece(char c, int row, int col);
+  void changeTurn();
   bool movePiece(int from_row, int from_col, int to_row, int to_col);
   void handleMove(int from_row, int from_col, int to_row, int to_col);
+  void handleLegalMoves();
   void updateWhiteMoves();
   void updateBlackMoves();
   void addMoveToStack(int from_row, int from_col, int to_row, int to_col,
@@ -71,9 +77,11 @@ class Board {
   bool blackCanCastleQueenSide();
   void moveRookOnCastle();
 
-  bool isKingInCheck(Piece* king, vector<Move>& moves);
+  bool isKingInCheck(Piece* king, vector<ChessMove>& moves);
   bool isWhiteKingInCheck();
   bool isBlackKingInCheck();
+  vector<Move> getCheckPath();
+  void updateMovesInCheck();
 };
 
 #endif

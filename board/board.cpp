@@ -5,14 +5,20 @@
 Board::Board() {
   // Starting FEN string
   fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+  turn = Color::WHITE;
+
+  white_king = nullptr;
+  black_king = nullptr;
+  pieces_attacking_king = {};
+
   board = vector<vector<Piece*>>(8, vector<Piece*>(8, nullptr));
+  setBoardWithFenString(fen_string);
+  updateWhiteMoves();
+
   move_stack = stack<ChessMove>();
 
   en_passant_row = -1;
   en_passant_col = -1;
-
-  white_king = nullptr;
-  black_king = nullptr;
 }
 
 Board::~Board() {}
@@ -78,6 +84,26 @@ Piece* Board::createPiece(char c, int row, int col) {
   }
 }
 
+// Change the turn
+void Board::changeTurn() {
+  updateWhiteMoves();
+  updateBlackMoves();
+
+  if (turn == Color::WHITE) {
+    turn = Color::BLACK;
+
+    if (isBlackKingInCheck()) {
+      updateMovesInCheck();
+    }
+  } else {
+    turn = Color::WHITE;
+
+    if (isWhiteKingInCheck()) {
+      updateMovesInCheck();
+    }
+  }
+}
+
 // Move a piece on the board
 // Return true if the move was successful, false otherwise
 bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
@@ -93,52 +119,43 @@ bool Board::movePiece(int from_row, int from_col, int to_row, int to_col) {
     return false;
   }
 
-  if (piece->isLegalMove(to_row, to_col)) {
-    piece->setRow(to_row);
-    piece->setCol(to_col);
-
-    piece->setHasMoved(true);
-
-    // If the pawn does an en passant capture
-    if (piece->isPawn() && from_col != to_col &&
-        board[to_row][to_col] == nullptr) {
-      removeEnPassantPiece();
-    }
-
-    // Handle capture and moves
-    handleMove(from_row, from_col, to_row, to_col);
-
-    // Add the move to the stack
-    addMoveToStack(from_row, from_col, to_row, to_col, piece);
-
-    // If there is no en passant square, reset it
-    if (!setEnPassantSquare()) {
-      en_passant_row = -1;
-      en_passant_col = -1;
-    }
-
-    // If the king castled, move the rook
-    if (piece->isKing()) {
-      moveRookOnCastle();
-    }
-
-    updateWhiteMoves();
-    updateBlackMoves();
-
-    if (isWhiteKingInCheck()) {
-      cout << "White king is in check" << endl;
-    }
-
-    if (isBlackKingInCheck()) {
-      cout << "Black king is in check" << endl;
-    }
-
-    // Move is legal, return true
-    return true;
+  // if the piece is not a legal move, return false
+  if (!piece->isLegalMove(to_row, to_col)) {
+    return false;
   }
 
-  // Move is illegal, return false
-  return false;
+  piece->setRow(to_row);
+  piece->setCol(to_col);
+
+  piece->setHasMoved(true);
+
+  // If the pawn does an en passant capture
+  if (piece->isPawn() && from_col != to_col &&
+      board[to_row][to_col] == nullptr) {
+    removeEnPassantPiece();
+  }
+
+  // Handle capture and moves
+  handleMove(from_row, from_col, to_row, to_col);
+
+  // Add the move to the stack
+  addMoveToStack(from_row, from_col, to_row, to_col, piece);
+
+  // If there is no en passant square, reset it
+  if (!setEnPassantSquare()) {
+    en_passant_row = -1;
+    en_passant_col = -1;
+  }
+
+  // If the king castled, move the rook
+  if (piece->isKing()) {
+    moveRookOnCastle();
+  }
+
+  // Change the turn
+  changeTurn();
+
+  return true;
 }
 
 // Handle capture and moves
@@ -169,7 +186,13 @@ void Board::updateWhiteMoves() {
         vector<Move> legal_moves = piece->updateLegalMoves(board);
 
         for (const auto& move : legal_moves) {
-          white_moves.push_back(move);
+          ChessMove chess_move;
+          chess_move.from_row = piece->getRow();
+          chess_move.from_col = piece->getCol();
+          chess_move.to_row = move.row;
+          chess_move.to_col = move.col;
+          chess_move.piece = piece;
+          white_moves.push_back(chess_move);
         }
       }
     }
@@ -185,7 +208,13 @@ void Board::updateBlackMoves() {
         vector<Move> legal_moves = piece->updateLegalMoves(board);
 
         for (const auto& move : legal_moves) {
-          black_moves.push_back(move);
+          ChessMove chess_move;
+          chess_move.from_row = piece->getRow();
+          chess_move.from_col = piece->getCol();
+          chess_move.to_row = move.row;
+          chess_move.to_col = move.col;
+          chess_move.piece = piece;
+          black_moves.push_back(chess_move);
         }
       }
     }
@@ -309,17 +338,19 @@ void Board::moveRookOnCastle() {
 }
 
 // Check if the king is in check
-bool Board::isKingInCheck(Piece* king, vector<Move>& moves) {
+bool Board::isKingInCheck(Piece* king, vector<ChessMove>& moves) {
   if (king == nullptr) {
     return false;
   }
 
   for (const auto& move : moves) {
-    if (move.row == king->getRow() && move.col == king->getCol()) {
+    if (move.to_row == king->getRow() && move.to_col == king->getCol()) {
+      pieces_attacking_king.push_back(move.piece);
       return true;
     }
   }
 
+  pieces_attacking_king = {};
   return false;
 }
 
@@ -329,4 +360,60 @@ bool Board::isWhiteKingInCheck() {
 
 bool Board::isBlackKingInCheck() {
   return isKingInCheck(black_king, white_moves);
+}
+
+vector<Move> Board::getCheckPath() {
+  vector<Move> check_path = {};
+
+  Piece* king_in_check = turn == Color::WHITE ? white_king : black_king;
+
+  // get the path from the attacking piece to the king
+  for (const auto& piece : pieces_attacking_king) {
+    vector<Move> path = piece->getPathToKing(king_in_check);
+
+    for (const auto& move : path) {
+      check_path.push_back(move);
+    }
+  }
+
+  return check_path;
+}
+
+// Updates the legal moves for pieces so they can only move to squares that
+// block the check path
+void Board::updateMovesInCheck() {
+  vector<Move> check_path = getCheckPath();
+
+  for (const auto& row : board) {
+    for (Piece* piece : row) {
+      if (piece == nullptr || piece->isKing() || piece->getColor() != turn) {
+        continue;
+      }
+
+      vector<Move> legal_moves = piece->updateLegalMoves(board);
+      vector<Move> new_legal_moves = {};
+
+      for (const Move& legal_move : legal_moves) {
+        for (const Move& check_move : check_path) {
+          // If the legal move is in the check path, add it to the new legal
+          // moves
+          if (legal_move.row == check_move.row &&
+              legal_move.col == check_move.col) {
+            new_legal_moves.push_back(legal_move);
+          }
+
+          // If the move can capture the piece attacking the king
+          for (Piece* piece : pieces_attacking_king) {
+            if (legal_move.row == piece->getRow() &&
+                legal_move.col == piece->getCol()) {
+              new_legal_moves.push_back(legal_move);
+            }
+          }
+        }
+      }
+
+      // Update the legal moves for the piece
+      piece->setPotentialMoves(new_legal_moves);
+    }
+  }
 }

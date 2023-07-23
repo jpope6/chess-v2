@@ -59,6 +59,8 @@ class Piece {
   bool isLegalMove(int row, int col);
   bool isPawn();
   bool isKing();
+
+  vector<Move> getPathToKing(Piece* king);
 };
 
 #endif

@@ -5,7 +5,6 @@ using namespace std;
 MyFrame::MyFrame()
     : wxFrame(nullptr, wxID_ANY, "Chess", wxDefaultPosition, wxSize(800, 837)) {
   chessboard = Board();
-  chessboard.setBoardWithFenString(chessboard.getFenString());
   LoadChessPieces();
 
   selectedPiece = nullptr;
@@ -151,6 +150,17 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
   int clickedCol = mouseX / squareSize;
   int clickedRow = mouseY / squareSize;
 
+  Piece *piece = chessboard.board[clickedRow][clickedCol];
+
+  if (piece == nullptr) {
+    return;
+  }
+
+  // Check if the piece is the color of the current turn
+  if (piece->getColor() != chessboard.getTurn()) {
+    return;
+  }
+
   // Check if a piece is present at the clicked position
   // If so, save the row and column of the piece
   if (chessboard.board[clickedRow][clickedCol] != nullptr) {
@@ -158,9 +168,6 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
     pieceSelected = true;
     selectedPieceRow = clickedRow;
     selectedPieceCol = clickedCol;
-
-    // Update the legal moves of the selected piece
-    selectedPiece->updateLegalMoves(chessboard.board);
 
     // If Piece is a pawn, update the legal moves for en passant
     if (selectedPiece->isPawn()) {

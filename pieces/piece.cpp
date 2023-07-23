@@ -155,3 +155,50 @@ bool Piece::isPawn() {
 bool Piece::isKing() {
   return this->getName() == 'k' || this->getName() == 'K';
 }
+
+vector<Move> Piece::getPathToKing(Piece* king) {
+  vector<Move> path = {};
+
+  // If the piece is a knight, return an empty path
+  if (this->getName() == 'n' || this->getName() == 'N') {
+    return path;
+  }
+
+  int dir_row;
+
+  // Get the direction the king is in
+  if (king->getRow() > this->getRow()) {
+    dir_row = 1;
+  } else if (king->getRow() < this->getRow()) {
+    dir_row = -1;
+  } else {
+    dir_row = 0;
+  }
+
+  int dir_col;
+
+  // Get the direction the king is in
+  if (king->getCol() > this->getCol()) {
+    dir_col = 1;
+  } else if (king->getCol() < this->getCol()) {
+    dir_col = -1;
+  } else {
+    dir_col = 0;
+  }
+
+  int curr_row = this->getRow();
+  int curr_col = this->getCol();
+
+  // Traverse path to the king
+  while (curr_row != king->getRow() || curr_col != king->getCol()) {
+    curr_row += dir_row;
+    curr_col += dir_col;
+
+    // Check if it is a valid move
+    if (this->isLegalMove(curr_row, curr_col)) {
+      path.push_back({curr_row, curr_col});
+    }
+  }
+
+  return path;
+}
