@@ -11,12 +11,15 @@ struct Move {
   int col;
 };
 
+enum Color { WHITE, BLACK };
+
 class Piece {
  private:
   int row;
   int col;
   char name;
   bool is_white;
+  Color color;
   bool has_moved;
   vector<Move> potential_moves;
 
@@ -29,8 +32,9 @@ class Piece {
   int getRow() { return row; }
   int getCol() { return col; }
   char getName() { return name; }
-  bool getIsWhite() { return is_white; }
-  bool getIsBlack() { return !is_white; }
+  Color getColor() { return color; }
+  bool getIsWhite() { return this->color == WHITE; }
+  bool getIsBlack() { return this->color == BLACK; }
   bool getHasMoved() { return has_moved; }
   vector<Move>& getPotentialMoves() { return potential_moves; }
 
@@ -46,6 +50,10 @@ class Piece {
   virtual vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) = 0;
 
   // Methods
+  void getDiagonalMoves(vector<vector<Piece*>>& board, int row, int col,
+                        vector<Move>& legal_moves);
+  void getStraightMoves(vector<vector<Piece*>>& board, int row, int col,
+                        vector<Move>& legal_moves);
   bool isSameColor(Piece* other);
   int colorOffset();
   bool isLegalMove(int row, int col);

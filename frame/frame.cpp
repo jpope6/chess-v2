@@ -162,8 +162,6 @@ void MyFrame::OnMouseLeftDown(wxMouseEvent &event) {
     // Update the legal moves of the selected piece
     selectedPiece->updateLegalMoves(chessboard.board);
 
-    chessboard.updateMovesInCheck(chessboard.getBlackKing(), selectedPiece);
-
     // If Piece is a pawn, update the legal moves for en passant
     if (selectedPiece->isPawn()) {
       int en_passant_row = chessboard.getEnPassantRow();

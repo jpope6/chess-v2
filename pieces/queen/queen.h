@@ -12,10 +12,6 @@ class Queen : public Piece {
 
   // Virtual Methods
   vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) override;
-
-  // Methods
-  void checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
-                        vector<Move>& legal_moves);
 };
 
 #endif

@@ -70,11 +70,10 @@ class Board {
   bool blackCanCastleKingSide();
   bool blackCanCastleQueenSide();
   void moveRookOnCastle();
+
   bool isKingInCheck(Piece* king, vector<Move>& moves);
   bool isWhiteKingInCheck();
   bool isBlackKingInCheck();
-  vector<Move> getCheckPath(Piece* king, vector<Move>& moves);
-  void updateMovesInCheck(Piece* king, Piece* selected_piece);
 };
 
 #endif
