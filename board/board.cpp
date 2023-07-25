@@ -394,20 +394,20 @@ void Board::updateMovesInCheck() {
       vector<Move> new_legal_moves = {};
 
       for (const Move& legal_move : legal_moves) {
+        // If the move can capture the piece attacking the king
+        for (Piece* piece : pieces_attacking_king) {
+          if (legal_move.row == piece->getRow() &&
+              legal_move.col == piece->getCol()) {
+            new_legal_moves.push_back(legal_move);
+          }
+        }
+
         for (const Move& check_move : check_path) {
           // If the legal move is in the check path, add it to the new legal
           // moves
           if (legal_move.row == check_move.row &&
               legal_move.col == check_move.col) {
             new_legal_moves.push_back(legal_move);
-          }
-
-          // If the move can capture the piece attacking the king
-          for (Piece* piece : pieces_attacking_king) {
-            if (legal_move.row == piece->getRow() &&
-                legal_move.col == piece->getCol()) {
-              new_legal_moves.push_back(legal_move);
-            }
           }
         }
       }

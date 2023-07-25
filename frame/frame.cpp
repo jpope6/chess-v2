@@ -3,7 +3,7 @@
 using namespace std;
 
 MyFrame::MyFrame()
-    : wxFrame(nullptr, wxID_ANY, "Chess", wxDefaultPosition, wxSize(800, 837)) {
+    : wxFrame(nullptr, wxID_ANY, "Chess", wxDefaultPosition, wxSize(840, 875)) {
   chessboard = Board();
   LoadChessPieces();
 
