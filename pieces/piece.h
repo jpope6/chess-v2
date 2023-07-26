@@ -25,6 +25,7 @@ class Piece {
   bool has_moved;
 
   vector<int> legal_moves;
+  map<int, int[8]> num_squares_to_edge;
 
  public:
   // Constructor
@@ -56,6 +57,7 @@ class Piece {
   virtual void updateLegalMoves(Piece* board[64]) = 0;
 
   // Member functions
+  void numSquaresToEdge();
   void getDiagonalMoves(Piece* board[64], vector<int>& legal_moves);
   void getStraightMoves(Piece* board[64], vector<int>& legal_moves);
   bool isLegalMove(int square);

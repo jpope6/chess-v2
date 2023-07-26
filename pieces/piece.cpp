@@ -1,5 +1,7 @@
 #include "piece.h"
 
+#include <iostream>
+
 Piece::Piece(int square, char piece) {
   this->row = square / 8;
   this->col = square % 8;
@@ -16,64 +18,68 @@ Piece::Piece(int square, char piece) {
 }
 
 void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
+  // The offset from the current square to the next square on the diagonal
   int directions[4] = {-9, -7, 7, 9};
 
-  for (int offset : directions) {
-    int square = this->square + offset;
+  // The number of squares until the edge of the board in each direction
+  int squares_until_edge[4] = {
+      min(this->row, this->col), min(this->row, 7 - this->col),
+      min(7 - this->row, this->col), min(7 - this->row, 7 - this->col)};
 
-    while (square >= 0 && square < 64) {
-      // If piece is the same color, break
+  for (int i = 0; i < 4; i++) {  // For each direction
+    int square = this->square;   // Start at the current square
+    for (int j = 0; j < squares_until_edge[i]; j++) {  // For each square
+      // Move to the next square on the diagonal
+      square += directions[i];
+
+      // If piece is the same color, stop looking in this direction
       if (board[square] != nullptr &&
           this->color == board[square]->getColor()) {
         break;
       }
 
-      // If piece is of the opposite color, add the square and break
-      if (board[square] != nullptr &&
-          this->color != board[square]->getColor()) {
-        legal_moves.push_back(square);
-        break;
-      }
-
-      // If the square is empty, add it and continue to the next square on the
-      // diagonal
+      // If the square is empty or of the opposite color, add it and continue to
+      // the next square on the diagonal
       legal_moves.push_back(square);
 
-      // If the square is on the edge of the board, break
-      if (square % 8 == 0 || square % 8 == 7) {
+      // If piece is of the opposite color, stop looking in this direction
+      if (board[square] != nullptr &&
+          this->color != board[square]->getColor()) {
         break;
       }
-
-      square += offset;
     }
   }
 }
 
 void Piece::getStraightMoves(Piece* board[64], vector<int>& legal_moves) {
-  int directions[4] = {-8, -1, 1, 8};
+  // The offset from the current square to the next square in each direction
+  int directions[4] = {-8, 1, 8, -1};  // Up, Right, Down, Left
 
-  for (int offset : directions) {
-    int square = this->square + offset;
+  // The number of squares until the edge of the board in each direction
+  int squares_until_edge[4] = {this->row, 7 - this->col, 7 - this->row,
+                               this->col};
 
-    while (square % 8 != 0 && square % 8 != 7) {
-      // If piece is the same color, break
+  for (int i = 0; i < 4; i++) {  // For each direction
+    int square = this->square;   // Start at the current square
+    for (int j = 0; j < squares_until_edge[i]; j++) {  // For each square
+      // Move to the next square in the direction
+      square += directions[i];
+
+      // If piece is the same color, stop looking in this direction
       if (board[square] != nullptr &&
           this->color == board[square]->getColor()) {
         break;
       }
 
-      // If piece is of the opposite color, add the square and break
-      if (board[square] != nullptr &&
-          this->color != board[square]->getColor()) {
-        legal_moves.push_back(square);
-        break;
-      }
-
-      // If the square is empty, add it and continue to the next square on the
-      // diagonal
+      // If the square is empty or of the opposite color, add it and continue to
+      // the next square in the direction
       legal_moves.push_back(square);
 
-      square += offset;
+      // If piece is of the opposite color, stop looking in this direction
+      if (board[square] != nullptr &&
+          this->color != board[square]->getColor()) {
+        break;
+      }
     }
   }
 }
