@@ -47,10 +47,10 @@ class Board {
   Piece* createPiece(int square, char c);
   void handleMove(int from_square, int to_square);
   void addMoveToStack(Move move) { this->move_stack.push(move); }
+  void setEnPassantSquare();
 
   // TEMPORARY UNTIL I ADD TURN
   void updateMovesForAllPieces();
-  void printBoard();
 };
 
 #endif

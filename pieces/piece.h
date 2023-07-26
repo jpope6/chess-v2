@@ -62,6 +62,8 @@ class Piece {
   void getDiagonalMoves(Piece* board[64], vector<int>& legal_moves);
   void getStraightMoves(Piece* board[64], vector<int>& legal_moves);
   bool isLegalMove(int square);
+
+  bool isPawn() { return piece_type == PAWN; }
 };
 
 #endif

@@ -38,8 +38,7 @@ void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
         break;
       }
 
-      // If the square is empty or of the opposite color, add it and continue to
-      // the next square on the diagonal
+      // If the square is empty or of the opposite color, add it to legal moves
       legal_moves.push_back(square);
 
       // If piece is of the opposite color, stop looking in this direction
@@ -71,8 +70,7 @@ void Piece::getStraightMoves(Piece* board[64], vector<int>& legal_moves) {
         break;
       }
 
-      // If the square is empty or of the opposite color, add it and continue to
-      // the next square in the direction
+      // If the square is empty or of the opposite color, add it to legal moves
       legal_moves.push_back(square);
 
       // If piece is of the opposite color, stop looking in this direction

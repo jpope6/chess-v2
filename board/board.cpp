@@ -5,10 +5,9 @@
 Board::Board() {
   fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-  cout << "Board constructor" << endl;
-
   // Set the starting board
   setBoardWithFenString(fen_string);
+  updateMovesForAllPieces();
 }
 
 // Set the board with the FEN string
@@ -81,6 +80,10 @@ void Board::handleMove(int from_square, int to_square) {
   }
 
   // Move the piece
+  if (board[to_square] != nullptr) {
+    delete board[to_square];
+  }
+
   board[to_square] = move.piece;
   board[from_square] = nullptr;
 
@@ -91,10 +94,12 @@ void Board::handleMove(int from_square, int to_square) {
   move.piece->setHasMoved(true);
 
   // Update the piece's legal moves
-  // this->updateMovesForAllPieces();
+  this->updateMovesForAllPieces();
 
   // Add the move to the stack
   this->addMoveToStack(move);
+
+  this->setEnPassantSquare();
 }
 
 void Board::updateMovesForAllPieces() {
@@ -102,5 +107,51 @@ void Board::updateMovesForAllPieces() {
     if (piece != nullptr) {
       piece->updateLegalMoves(board);
     }
+  }
+}
+
+void Board::setEnPassantSquare() {
+  // Get the last move
+  Move last_move = move_stack.top();
+
+  // If the last move was not a pawn, return
+  if (!last_move.piece->isPawn()) {
+    return;
+  }
+
+  // If the last move was not two squares, return
+  if (abs(last_move.from_square - last_move.to_square) != 16) {
+    return;
+  }
+
+  int directions[2] = {-1, 1};
+
+  for (int i = 0; i < 2; i++) {
+    int square = last_move.to_square + directions[i];
+
+    // If the square is not on the board, continue
+    if (square < 0 || square > 63) {
+      continue;
+    }
+
+    // If the square to the side of the pawn is empty, no en passant
+    if (board[square] == nullptr) {
+      continue;
+    }
+
+    // The other piece must be a different color
+    if (board[square]->getColor() == last_move.piece->getColor()) {
+      continue;
+    }
+
+    // If the square to the side of the pawn is not a pawn, no en passant
+    if (!board[square]->isPawn()) {
+      continue;
+    }
+
+    Pawn* pawn = static_cast<Pawn*>(board[square]);
+    int color_offset = pawn->getColor() == WHITE ? -8 : 8;
+
+    pawn->addEnPassantSquare(last_move.to_square + color_offset);
   }
 }

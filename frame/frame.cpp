@@ -141,7 +141,7 @@ void Frame::onMouseLeftDown(wxMouseEvent &event) {
   selected_piece_square = clicked_row * 8 + clicked_col;
   selected_piece = chessboard.getBoard()[selected_piece_square];
 
-  selected_piece->updateLegalMoves(chessboard.getBoard());
+  // selected_piece->updateLegalMoves(chessboard.getBoard());
 
   Refresh();
 }

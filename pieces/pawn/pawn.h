@@ -11,6 +11,12 @@ class Pawn : public Piece {
 
   // Virtual functions
   void updateLegalMoves(Piece* board[64]) override;
+
+  // Member functions
+  void checkPieceInPath(Piece* board[64], int square, vector<int>& legal_moves);
+  void checkPieceInAttackPath(Piece* board[64], int square,
+                              vector<int>& legal_moves);
+  void addEnPassantSquare(int square);
 };
 
 #endif
