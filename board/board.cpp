@@ -9,8 +9,6 @@ Board::Board() {
 
   // Set the starting board
   setBoardWithFenString(fen_string);
-
-  printBoard();
 }
 
 // Set the board with the FEN string
@@ -103,19 +101,6 @@ void Board::updateMovesForAllPieces() {
   for (Piece* piece : board) {
     if (piece != nullptr) {
       piece->updateLegalMoves(board);
-    }
-  }
-}
-
-void Board::printBoard() {
-  for (int i = 0; i < 64; i++) {
-    if (board[i] == nullptr) {
-      cout << "0 ";
-    } else {
-      cout << board[i]->getName() << " ";
-    }
-    if (i % 8 == 7) {
-      cout << endl;
     }
   }
 }

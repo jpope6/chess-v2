@@ -40,6 +40,7 @@ class Piece {
   int getCol() { return col; }
   int getSquare() { return square; }
   Color getColor() { return color; }
+  bool getHasMoved() { return has_moved; }
   vector<int> getLegalMoves() { return legal_moves; }
 
   // Setters

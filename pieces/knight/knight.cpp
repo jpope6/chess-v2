@@ -12,10 +12,11 @@ void Knight::updateLegalMoves(Piece* board[64]) {
   for (int offset : directions) {
     int square = this->getSquare() + offset;
 
-    if (square >= 0 && square < 64) {
-      if (board[square] == nullptr) {
-        legal_moves.push_back(square);
-      } else if (board[square]->getColor() != this->getColor()) {
+    // If the square is on the board and is within 2 columns of the current
+    // square
+    if (square >= 0 && square < 64 && abs(this->getCol() - square % 8) < 3) {
+      if (board[square] == nullptr ||
+          board[square]->getColor() != this->getColor()) {
         legal_moves.push_back(square);
       }
     }
