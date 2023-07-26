@@ -5,9 +5,11 @@
 Board::Board() {
   fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+  turn = WHITE;
+
   // Set the starting board
   setBoardWithFenString(fen_string);
-  updateMovesForAllPieces();
+  updateMovesForAllPiecesOfCurrentTurn();
 }
 
 // Set the board with the FEN string
@@ -81,7 +83,10 @@ void Board::handleMove(int from_square, int to_square) {
 
   // Move the piece
   if (board[to_square] != nullptr) {
+    move.captured_piece = board[to_square];
     delete board[to_square];
+  } else {
+    move.captured_piece = nullptr;
   }
 
   board[to_square] = move.piece;
@@ -93,21 +98,31 @@ void Board::handleMove(int from_square, int to_square) {
   // Update the piece's has_moved
   move.piece->setHasMoved(true);
 
-  // Update the piece's legal moves
-  this->updateMovesForAllPieces();
-
   // Add the move to the stack
   this->addMoveToStack(move);
 
-  this->setEnPassantSquare();
+  this->handleEnPassantCapture();
+
+  this->changeTurn();
 }
 
-void Board::updateMovesForAllPieces() {
+void Board::updateMovesForAllPiecesOfCurrentTurn() {
   for (Piece* piece : board) {
-    if (piece != nullptr) {
+    if (piece != nullptr && piece->getColor() == turn) {
       piece->updateLegalMoves(board);
     }
   }
+}
+
+void Board::changeTurn() {
+  if (turn == WHITE) {
+    turn = BLACK;
+  } else {
+    turn = WHITE;
+  }
+
+  this->updateMovesForAllPiecesOfCurrentTurn();
+  this->setEnPassantSquare();
 }
 
 void Board::setEnPassantSquare() {
@@ -153,5 +168,29 @@ void Board::setEnPassantSquare() {
     int color_offset = pawn->getColor() == WHITE ? -8 : 8;
 
     pawn->addEnPassantSquare(last_move.to_square + color_offset);
+  }
+}
+
+void Board::handleEnPassantCapture() {
+  // Get the last move
+  Move last_move = move_stack.top();
+
+  // If the last move was not a pawn, return
+  if (!last_move.piece->isPawn()) {
+    return;
+  }
+
+  // If last move was not a diagonal move, return
+  if (abs(last_move.from_square - last_move.to_square) != 9 &&
+      abs(last_move.from_square - last_move.to_square) != 7) {
+    return;
+  }
+
+  // If the diagonal square is nullptr, delete the en passant captured pawn
+  if (last_move.captured_piece == nullptr) {
+    int color_offset = last_move.piece->getColor() == WHITE ? 8 : -8;
+    last_move.captured_piece = board[last_move.to_square + color_offset];
+    delete board[last_move.to_square + color_offset];
+    board[last_move.to_square + color_offset] = nullptr;
   }
 }

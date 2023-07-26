@@ -18,6 +18,7 @@ struct Move {
   int from_square;
   int to_square;
   Piece* piece;
+  Piece* captured_piece;
 };
 
 class Board {
@@ -46,11 +47,11 @@ class Board {
   void setBoardWithFenString(string fen_string);
   Piece* createPiece(int square, char c);
   void handleMove(int from_square, int to_square);
+  void updateMovesForAllPiecesOfCurrentTurn();
+  void changeTurn();
   void addMoveToStack(Move move) { this->move_stack.push(move); }
   void setEnPassantSquare();
-
-  // TEMPORARY UNTIL I ADD TURN
-  void updateMovesForAllPieces();
+  void handleEnPassantCapture();
 };
 
 #endif

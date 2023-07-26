@@ -131,9 +131,15 @@ void Frame::onMouseLeftDown(wxMouseEvent &event) {
 
   int clicked_row = mouse_y / square_size;
   int clicked_col = mouse_x / square_size;
+  Piece *clicked_piece = chessboard.getBoard()[clicked_row * 8 + clicked_col];
 
   // If user clicks on an empty square, return
-  if (chessboard.getBoard()[clicked_row * 8 + clicked_col] == nullptr) {
+  if (clicked_piece == nullptr) {
+    return;
+  }
+
+  // If use clicks on piece of different color than turn, return
+  if (clicked_piece->getColor() != chessboard.getTurn()) {
     return;
   }
 
