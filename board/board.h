@@ -30,8 +30,8 @@ class Board {
 
   Color turn;
 
-  Piece* white_king;
-  Piece* black_king;
+  King* white_king;
+  King* black_king;
 
  public:
   // Constructor
@@ -52,6 +52,8 @@ class Board {
   void addMoveToStack(Move move) { this->move_stack.push(move); }
   void setEnPassantSquare();
   void handleEnPassantCapture();
+  void handleCastlingRights();
+  void moveRookOnCastle();
 };
 
 #endif

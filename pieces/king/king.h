@@ -13,7 +13,8 @@ class King : public Piece {
   void updateLegalMoves(Piece* board[64]) override;
 
   // Member functions
-  void checkCastlingRights(Piece* board[64], vector<int>& legal_moves);
+  void checkPieceInPath(Piece* board[64], vector<int>& legal_moves);
+  void setCastlingSquare(Piece* board[64], int rook_square);
 };
 
 #endif

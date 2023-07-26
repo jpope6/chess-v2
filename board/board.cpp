@@ -102,6 +102,7 @@ void Board::handleMove(int from_square, int to_square) {
   this->addMoveToStack(move);
 
   this->handleEnPassantCapture();
+  this->moveRookOnCastle();
 
   this->changeTurn();
 }
@@ -123,6 +124,7 @@ void Board::changeTurn() {
 
   this->updateMovesForAllPiecesOfCurrentTurn();
   this->setEnPassantSquare();
+  this->handleCastlingRights();
 }
 
 void Board::setEnPassantSquare() {
@@ -193,4 +195,51 @@ void Board::handleEnPassantCapture() {
     delete board[last_move.to_square + color_offset];
     board[last_move.to_square + color_offset] = nullptr;
   }
+}
+
+void Board::handleCastlingRights() {
+  King* king = turn == WHITE ? white_king : black_king;
+
+  if (king->getHasMoved()) {
+    return;
+  }
+
+  // Get the rook square
+  int king_side_rook_square = king->getSquare() + 3;
+  king->setCastlingSquare(this->board, king_side_rook_square);
+
+  int queen_side_rook_square = king->getSquare() - 4;
+  king->setCastlingSquare(this->board, queen_side_rook_square);
+}
+
+void Board::moveRookOnCastle() {
+  // Get the last move
+  Move last_move = move_stack.top();
+
+  // If the last move was not a king, return
+  if (!last_move.piece->isKing()) {
+    return;
+  }
+
+  // If the last move was not a castle, return
+  if (abs(last_move.from_square - last_move.to_square) != 2) {
+    return;
+  }
+
+  // Get the rook square
+  int rook_square = last_move.to_square > last_move.from_square
+                        ? last_move.to_square + 1
+                        : last_move.to_square - 2;
+  // The square the rook will move to
+  int target_square = last_move.to_square > last_move.from_square
+                          ? last_move.to_square - 1
+                          : last_move.to_square + 1;
+
+  // Move the rook
+  board[target_square] = board[rook_square];
+  board[rook_square] = nullptr;
+
+  // Update the rook's square
+  board[target_square]->setSquare(target_square);
+  board[target_square]->setHasMoved(true);
 }

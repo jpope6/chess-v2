@@ -7,15 +7,14 @@ Pawn::Pawn(int square, char piece) : Piece(square, piece) {}
 void Pawn::updateLegalMoves(Piece* board[64]) {
   vector<int> legal_moves = {};
 
-  this->checkPieceInPath(board, this->getSquare(), legal_moves);
+  this->checkPieceInPath(board, legal_moves);
   this->checkPieceInAttackPath(board, this->getSquare(), legal_moves);
 
   this->setLegalMoves(legal_moves);
 }
 
 // Check if there is a piece in the path of the pawn
-void Pawn::checkPieceInPath(Piece* board[64], int square,
-                            vector<int>& legal_moves) {
+void Pawn::checkPieceInPath(Piece* board[64], vector<int>& legal_moves) {
   // Pawn can move forward 1 square or 2 squares if it hasn't moved yet
   int directions[2] = {8, 16};
   int stop_index = this->getHasMoved() ? 1 : 2;

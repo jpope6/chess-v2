@@ -64,6 +64,8 @@ class Piece {
   bool isLegalMove(int square);
 
   bool isPawn() { return piece_type == PAWN; }
+  bool isRook() { return piece_type == ROOK; }
+  bool isKing() { return piece_type == KING; }
 };
 
 #endif
