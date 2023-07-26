@@ -1,47 +1,25 @@
 #include "knight.h"
 
 // Constructor
-Knight::Knight(int row, int col, char name) : Piece(row, col, name) {}
+Knight::Knight(int square, char piece) : Piece(square, piece) {}
 
-// Returns all legal moves for the knight
-vector<Move> Knight::updateLegalMoves(vector<vector<Piece*>>& board) {
-  vector<Move> legal_moves = {};
+// Get the legal moves for the knight
+void Knight::updateLegalMoves(Piece* board[64]) {
+  vector<int> legal_moves = {};
 
-  int row = this->getRow();
-  int col = this->getCol();
+  int directions[8] = {-17, -15, -10, -6, 6, 10, 15, 17};
 
-  // Check if knight can move forward
-  this->checkPieceInPath(board, row, col, legal_moves);
-  this->setPotentialMoves(legal_moves);
+  for (int offset : directions) {
+    int square = this->getSquare() + offset;
 
-  return legal_moves;
-}
-
-// Helper function to check if there is a piece in the way of the knight
-void Knight::checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
-                              vector<Move>& legal_moves) {
-  // Knights can move 2 spaces in one direction and 1 space in the other
-  int offsets[8][2] = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},
-                       {1, -2},  {1, 2},  {2, -1},  {2, 1}};
-
-  for (const auto& offset : offsets) {
-    // Calculate the row and column of the new move
-    int new_row = row + offset[0];
-    int new_col = col + offset[1];
-
-    // If the new move is in bounds
-    if (new_row >= 0 && new_row < 8 && new_col >= 0 && new_col < 8) {
-      // If there is no piece in the way, add the move to the list of legal
-      // moves
-      if (board[new_row][new_col] == nullptr) {
-        legal_moves.push_back({new_row, new_col});
-      } else {
-        // There is a piece in the way, check if it is the same color
-        // If it is not the same color, add the move to the list of legal moves
-        if (!this->isSameColor(board[new_row][new_col])) {
-          legal_moves.push_back({new_row, new_col});
-        }
+    if (square >= 0 && square < 64) {
+      if (board[square] == nullptr) {
+        legal_moves.push_back(square);
+      } else if (board[square]->getColor() != this->getColor()) {
+        legal_moves.push_back(square);
       }
     }
   }
+
+  this->setLegalMoves(legal_moves);
 }

@@ -6,16 +6,11 @@
 class Knight : public Piece {
  private:
  public:
-  // Constructor and destructor
-  Knight(int row, int col, char name);
-  ~Knight();
+  // Constructor
+  Knight(int quare, char piece);
 
-  // Virtual Methods
-  vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) override;
-
-  // Methods
-  void checkPieceInPath(vector<vector<Piece*>>& board, int row, int col,
-                        vector<Move>& legal_moves);
+  // Virtual functions
+  void updateLegalMoves(Piece* board[64]) override;
 };
 
 #endif

@@ -1,18 +1,13 @@
 #include "rook.h"
 
 // Constructor
-Rook::Rook(int row, int col, char name) : Piece(row, col, name) {}
+Rook::Rook(int square, char piece) : Piece(square, piece) {}
 
-// Returns all legal moves for the rook
-vector<Move> Rook::updateLegalMoves(vector<vector<Piece*>>& board) {
-  vector<Move> legal_moves = {};
+// Get the legal moves for the rook
+void Rook::updateLegalMoves(Piece* board[64]) {
+  vector<int> legal_moves = {};
 
-  int row = this->getRow();
-  int col = this->getCol();
+  this->getStraightMoves(board, legal_moves);
 
-  // Check if rook can move forward
-  this->getStraightMoves(board, row, col, legal_moves);
-  this->setPotentialMoves(legal_moves);
-
-  return legal_moves;
+  this->setLegalMoves(legal_moves);
 }

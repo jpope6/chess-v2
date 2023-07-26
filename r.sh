@@ -37,6 +37,7 @@ echo "Running main.o"
 ./main
 
 echo "Execution completed successfully."
+rm main
 
 echo "Removing object files"
-rm main *.o
+rm *.o

@@ -6,12 +6,11 @@
 class Bishop : public Piece {
  private:
  public:
-  // Constructor and destructor
-  Bishop(int row, int col, char name);
-  ~Bishop();
+  // Constructor
+  Bishop(int quare, char piece);
 
-  // Virtual Methods
-  vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) override;
+  // Virtual functions
+  void updateLegalMoves(Piece* board[64]) override;
 };
 
 #endif

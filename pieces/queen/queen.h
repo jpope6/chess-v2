@@ -6,12 +6,11 @@
 class Queen : public Piece {
  private:
  public:
-  // Constructor and destructor
-  Queen(int row, int col, char name);
-  ~Queen();
+  // Constructor
+  Queen(int quare, char piece);
 
-  // Virtual Methods
-  vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) override;
+  // Virtual functions
+  void updateLegalMoves(Piece* board[64]) override;
 };
 
 #endif

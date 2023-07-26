@@ -2,65 +2,63 @@
 #define PIECE_H
 
 #include <cctype>
+#include <cmath>
+#include <map>
 #include <vector>
 
 using namespace std;
 
-struct Move {
-  int row;
-  int col;
-};
+enum Color { WHITE = 0, BLACK = 1 };
 
-enum Color { WHITE, BLACK };
+enum Type { PAWN = 0, KNIGHT = 1, BISHOP = 2, ROOK = 3, QUEEN = 4, KING = 5 };
+
+enum Column { A = 0, B = 1, C = 2, D = 3, E = 4, F = 5, G = 6, H = 7 };
 
 class Piece {
  private:
   int row;
   int col;
+  int square;
   char name;
-  bool is_white;
   Color color;
+  Type piece_type;
   bool has_moved;
-  vector<Move> potential_moves;
+
+  vector<int> legal_moves;
 
  public:
-  // Constructor and destructor
-  Piece(int row, int col, char name);
-  ~Piece();
+  // Constructor
+  Piece(int square, char piece);
+
+  // Destructor
+  virtual ~Piece() = default;
 
   // Getters
+  char getName() { return name; }
   int getRow() { return row; }
   int getCol() { return col; }
-  char getName() { return name; }
+  int getSquare() { return square; }
   Color getColor() { return color; }
-  bool getIsWhite() { return this->color == WHITE; }
-  bool getIsBlack() { return this->color == BLACK; }
-  bool getHasMoved() { return has_moved; }
-  vector<Move>& getPotentialMoves() { return potential_moves; }
+  vector<int> getLegalMoves() { return legal_moves; }
 
   // Setters
-  void setRow(int row) { this->row = row; }
-  void setCol(int col) { this->col = col; }
-  void setHasMoved(bool has_moved) { this->has_moved = has_moved; }
-  void setPotentialMoves(vector<Move> potential_moves) {
-    this->potential_moves = potential_moves;
+  void setSquare(int square) {
+    this->row = square / 8;
+    this->col = square % 8;
+    this->square = square;
   }
+  void setLegalMoves(vector<int> legal_moves) {
+    this->legal_moves = legal_moves;
+  }
+  void setHasMoved(bool has_moved) { this->has_moved = has_moved; }
 
-  // Virtual Methods
-  virtual vector<Move> updateLegalMoves(vector<vector<Piece*>>& board) = 0;
+  // Virtual functions
+  virtual void updateLegalMoves(Piece* board[64]) = 0;
 
-  // Methods
-  void getDiagonalMoves(vector<vector<Piece*>>& board, int row, int col,
-                        vector<Move>& legal_moves);
-  void getStraightMoves(vector<vector<Piece*>>& board, int row, int col,
-                        vector<Move>& legal_moves);
-  bool isSameColor(Piece* other);
-  int colorOffset();
-  bool isLegalMove(int row, int col);
-  bool isPawn();
-  bool isKing();
-
-  vector<Move> getPathToKing(Piece* king);
+  // Member functions
+  void getDiagonalMoves(Piece* board[64], vector<int>& legal_moves);
+  void getStraightMoves(Piece* board[64], vector<int>& legal_moves);
+  bool isLegalMove(int square);
 };
 
 #endif
