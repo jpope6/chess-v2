@@ -115,14 +115,6 @@ void Board::updateMovesForAllPieces() {
   }
 }
 
-void Board::clearPathMapForAllPieces() {
-  for (Piece *piece : board) {
-    if (piece != nullptr) {
-      piece->getPathMap().clear();
-    }
-  }
-}
-
 void Board::changeTurn() {
   if (turn == WHITE) {
     turn = BLACK;
@@ -130,7 +122,6 @@ void Board::changeTurn() {
     turn = WHITE;
   }
 
-  this->clearPathMapForAllPieces();
   this->updateMovesForAllPieces();
   this->setEnPassantSquare();
   this->handleKingCheck();

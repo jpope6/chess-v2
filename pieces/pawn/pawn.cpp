@@ -44,6 +44,8 @@ void Pawn::checkPieceInAttackPath(Piece* board[64], vector<int>& legal_moves) {
   int directions[2] = {7, 9};
 
   for (int i = 0; i < 2; i++) {
+    this->getPathMap()[directions[i]] = {};
+
     int square = this->getSquare() + directions[i] * color_offset;
 
     if (square >= 0 && square < 64 && abs(this->getCol() - square % 8) <= 1) {
