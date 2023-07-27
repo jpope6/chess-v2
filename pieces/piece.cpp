@@ -18,8 +18,6 @@ Piece::Piece(int square, char piece) {
 }
 
 void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
-  this->path_map.clear();
-
   // The offset from the current square to the next square on the diagonal
   int directions[4] = {-9, -7, 7, 9};
 
@@ -30,6 +28,7 @@ void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
 
   for (int i = 0; i < 4; i++) {  // For each direction
     int square = this->square;   // Start at the current square
+    this->path_map[directions[i]] = {};
     for (int j = 0; j < squares_until_edge[i]; j++) {  // For each square
       // Move to the next square on the diagonal
       square += directions[i];
@@ -54,8 +53,6 @@ void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
 }
 
 void Piece::getStraightMoves(Piece* board[64], vector<int>& legal_moves) {
-  this->path_map.clear();
-
   // The offset from the current square to the next square in each direction
   int directions[4] = {-8, 1, 8, -1};  // Up, Right, Down, Left
 
@@ -65,6 +62,7 @@ void Piece::getStraightMoves(Piece* board[64], vector<int>& legal_moves) {
 
   for (int i = 0; i < 4; i++) {  // For each direction
     int square = this->square;   // Start at the current square
+    this->path_map[directions[i]] = {};
     for (int j = 0; j < squares_until_edge[i]; j++) {  // For each square
       // Move to the next square in the direction
       square += directions[i];

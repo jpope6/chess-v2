@@ -51,6 +51,7 @@ class Board {
   Piece *createPiece(int square, char c);
   void handleMove(int from_square, int to_square);
   void updateMovesForAllPieces();
+  void clearPathMapForAllPieces();
   void changeTurn();
   void addMoveToStack(Move move) { this->move_stack.push(move); }
   void setEnPassantSquare();

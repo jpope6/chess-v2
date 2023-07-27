@@ -115,6 +115,14 @@ void Board::updateMovesForAllPieces() {
   }
 }
 
+void Board::clearPathMapForAllPieces() {
+  for (Piece *piece : board) {
+    if (piece != nullptr) {
+      piece->getPathMap().clear();
+    }
+  }
+}
+
 void Board::changeTurn() {
   if (turn == WHITE) {
     turn = BLACK;
@@ -122,10 +130,11 @@ void Board::changeTurn() {
     turn = WHITE;
   }
 
+  this->clearPathMapForAllPieces();
   this->updateMovesForAllPieces();
   this->setEnPassantSquare();
-  this->handleCastlingRights();
   this->handleKingCheck();
+  this->handleCastlingRights();
 }
 
 void Board::setEnPassantSquare() {
@@ -267,7 +276,7 @@ void Board::handleKingCheck() {
 
 void Board::updateMovesInCheck() {
   King *king = turn == WHITE ? white_king : black_king;
-  vector<int> moves_that_stop_check;
+  vector<int> moves_that_stop_check = {};
 
   // Moves that stop check are moves that block the path to the king
   for (Piece *piece : pieces_attacking_king) {

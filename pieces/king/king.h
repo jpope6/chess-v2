@@ -24,7 +24,7 @@ class King : public Piece {
   bool isInCheck(Piece* board[64], vector<Piece*>& pieces,
                  vector<Piece*>& pieces_attacking_king);
   bool isKingMovingThroughCheck(Piece* board[64], int to_square,
-                                vector<Piece*>& pieces_attacking_king);
+                                vector<Piece*> pieces_attacking_king);
 };
 
 #endif
