@@ -53,7 +53,7 @@ void King::setCastlingSquare(Piece* board[64], int rook_square) {
 
   int direction = rook_square > this->getSquare() ? 1 : -1;
   int start = this->getSquare() + direction;
-  int end = rook_square - direction;
+  int end = rook_square;
 
   for (int square = start; square != end; square += direction) {
     // If there is a piece in the way, return
