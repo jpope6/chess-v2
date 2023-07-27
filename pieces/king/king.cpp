@@ -30,7 +30,8 @@ void King::checkPieceInPath(Piece* board[64], vector<int>& legal_moves) {
   }
 }
 
-void King::setCastlingSquare(Piece* board[64], int rook_square) {
+void King::setCastlingSquare(Piece* board[64], int rook_square,
+                             vector<Piece*>& pieces_attacking_king) {
   // If the rook is not on the starting square, return
   if (board[rook_square] == nullptr) {
     return;
@@ -61,7 +62,10 @@ void King::setCastlingSquare(Piece* board[64], int rook_square) {
       return;
     }
 
-    // TODO: Check if the king is in check
+    // Check if the king is moving through check
+    if (this->isKingMovingThroughCheck(board, square, pieces_attacking_king)) {
+      return;
+    }
   }
 
   // Add the castling square to the legal moves
@@ -89,4 +93,32 @@ bool King::isInCheck(Piece* board[64], vector<Piece*>& pieces,
   pieces_attacking_king = {};
   this->is_in_check = false;
   return false;
+}
+
+bool King::isKingMovingThroughCheck(Piece* board[64], int to_square,
+                                    vector<Piece*>& pieces_attacking_king) {
+  vector<Piece*> pieces = {};
+
+  // Get all the pieces of the opposite color
+  for (int i = 0; i < 64; i++) {
+    if (board[i] != nullptr && board[i]->getColor() != this->getColor()) {
+      pieces.push_back(board[i]);
+    }
+  }
+
+  int original_square = this->getSquare();
+
+  // Check if the king is in check at the destination square
+  board[to_square] = this;
+  board[original_square] = nullptr;
+  this->setSquare(to_square);
+
+  bool is_in_check = this->isInCheck(board, pieces, pieces_attacking_king);
+
+  // Reset the board
+  board[original_square] = this;
+  board[to_square] = nullptr;
+  this->setSquare(original_square);
+
+  return is_in_check;
 }

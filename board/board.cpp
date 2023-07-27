@@ -207,10 +207,12 @@ void Board::handleCastlingRights() {
 
   // Get the rook square
   int king_side_rook_square = king->getSquare() + 3;
-  king->setCastlingSquare(this->board, king_side_rook_square);
+  king->setCastlingSquare(this->board, king_side_rook_square,
+                          pieces_attacking_king);
 
   int queen_side_rook_square = king->getSquare() - 4;
-  king->setCastlingSquare(this->board, queen_side_rook_square);
+  king->setCastlingSquare(this->board, queen_side_rook_square,
+                          pieces_attacking_king);
 }
 
 void Board::moveRookOnCastle() {
