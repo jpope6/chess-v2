@@ -1,7 +1,9 @@
 #include "king.h"
 
 // Constructor
-King::King(int square, char piece) : Piece(square, piece) {}
+King::King(int square, char piece) : Piece(square, piece) {
+  this->is_in_check = false;
+}
 
 // Get the legal moves for the king
 void King::updateLegalMoves(Piece* board[64]) {
@@ -67,4 +69,24 @@ void King::setCastlingSquare(Piece* board[64], int rook_square) {
   int castling_square = rook_square > this->getSquare() ? 2 : -2;
   legal_moves.push_back(this->getSquare() + castling_square);
   this->setLegalMoves(legal_moves);
+}
+
+bool King::isInCheck(Piece* board[64], vector<Piece*>& pieces,
+                     vector<Piece*>& pieces_attacking_king) {
+  // Check if the king is in check
+  for (Piece* piece : pieces) {
+    piece->updateLegalMoves(board);
+
+    for (int square : piece->getLegalMoves()) {
+      if (square == this->getSquare()) {
+        pieces_attacking_king.push_back(piece);
+        this->is_in_check = true;
+        return true;
+      }
+    }
+  }
+
+  pieces_attacking_king = {};
+  this->is_in_check = false;
+  return false;
 }

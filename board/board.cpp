@@ -9,7 +9,7 @@ Board::Board() {
 
   // Set the starting board
   setBoardWithFenString(fen_string);
-  updateMovesForAllPiecesOfCurrentTurn();
+  updateMovesForAllPieces();
 }
 
 // Set the board with the FEN string
@@ -42,7 +42,7 @@ void Board::setBoardWithFenString(string fen_string) {
 }
 
 // Create a piece based on the character
-Piece* Board::createPiece(int square, char c) {
+Piece *Board::createPiece(int square, char c) {
   switch (c) {
     case 'P':
     case 'p':
@@ -107,9 +107,9 @@ void Board::handleMove(int from_square, int to_square) {
   this->changeTurn();
 }
 
-void Board::updateMovesForAllPiecesOfCurrentTurn() {
-  for (Piece* piece : board) {
-    if (piece != nullptr && piece->getColor() == turn) {
+void Board::updateMovesForAllPieces() {
+  for (Piece *piece : board) {
+    if (piece != nullptr) {
       piece->updateLegalMoves(board);
     }
   }
@@ -122,9 +122,10 @@ void Board::changeTurn() {
     turn = WHITE;
   }
 
-  this->updateMovesForAllPiecesOfCurrentTurn();
+  this->updateMovesForAllPieces();
   this->setEnPassantSquare();
   this->handleCastlingRights();
+  this->handleKingCheck();
 }
 
 void Board::setEnPassantSquare() {
@@ -166,7 +167,7 @@ void Board::setEnPassantSquare() {
       continue;
     }
 
-    Pawn* pawn = static_cast<Pawn*>(board[square]);
+    Pawn *pawn = static_cast<Pawn *>(board[square]);
     int color_offset = pawn->getColor() == WHITE ? -8 : 8;
 
     pawn->addEnPassantSquare(last_move.to_square + color_offset);
@@ -198,7 +199,7 @@ void Board::handleEnPassantCapture() {
 }
 
 void Board::handleCastlingRights() {
-  King* king = turn == WHITE ? white_king : black_king;
+  King *king = turn == WHITE ? white_king : black_king;
 
   if (king->getHasMoved()) {
     return;
@@ -242,4 +243,21 @@ void Board::moveRookOnCastle() {
   // Update the rook's square
   board[target_square]->setSquare(target_square);
   board[target_square]->setHasMoved(true);
+}
+
+void Board::handleKingCheck() {
+  King *king = turn == WHITE ? white_king : black_king;
+
+  // Get all the pieces of the opposite color
+  std::vector<Piece *> pieces;
+
+  for (Piece *piece : board) {
+    if (piece != nullptr && piece->getColor() != turn) {
+      pieces.push_back(piece);
+    }
+  }
+
+  if (king->isInCheck(board, pieces, pieces_attacking_king)) {
+    cout << "King is in check" << endl;
+  }
 }

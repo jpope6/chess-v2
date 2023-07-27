@@ -17,21 +17,23 @@ using namespace std;
 struct Move {
   int from_square;
   int to_square;
-  Piece* piece;
-  Piece* captured_piece;
+  Piece *piece;
+  Piece *captured_piece;
 };
 
 class Board {
  private:
   string fen_string;
-  Piece* board[64];
+  Piece *board[64];
 
   stack<Move> move_stack;
 
   Color turn;
 
-  King* white_king;
-  King* black_king;
+  King *white_king;
+  King *black_king;
+
+  vector<Piece *> pieces_attacking_king;
 
  public:
   // Constructor
@@ -39,21 +41,22 @@ class Board {
 
   // Getters
   string getFenString() { return fen_string; }
-  Piece** getBoard() { return board; }
+  Piece **getBoard() { return board; }
   stack<Move> getMoveStack() { return move_stack; }
   Color getTurn() { return turn; }
 
   // Member functions
   void setBoardWithFenString(string fen_string);
-  Piece* createPiece(int square, char c);
+  Piece *createPiece(int square, char c);
   void handleMove(int from_square, int to_square);
-  void updateMovesForAllPiecesOfCurrentTurn();
+  void updateMovesForAllPieces();
   void changeTurn();
   void addMoveToStack(Move move) { this->move_stack.push(move); }
   void setEnPassantSquare();
   void handleEnPassantCapture();
   void handleCastlingRights();
   void moveRookOnCastle();
+  void handleKingCheck();
 };
 
 #endif

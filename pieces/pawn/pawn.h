@@ -14,8 +14,7 @@ class Pawn : public Piece {
 
   // Member functions
   void checkPieceInPath(Piece* board[64], vector<int>& legal_moves);
-  void checkPieceInAttackPath(Piece* board[64], int square,
-                              vector<int>& legal_moves);
+  void checkPieceInAttackPath(Piece* board[64], vector<int>& legal_moves);
   void addEnPassantSquare(int square);
 };
 

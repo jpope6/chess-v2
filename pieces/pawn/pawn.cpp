@@ -8,7 +8,7 @@ void Pawn::updateLegalMoves(Piece* board[64]) {
   vector<int> legal_moves = {};
 
   this->checkPieceInPath(board, legal_moves);
-  this->checkPieceInAttackPath(board, this->getSquare(), legal_moves);
+  this->checkPieceInAttackPath(board, legal_moves);
 
   this->setLegalMoves(legal_moves);
 }
@@ -36,8 +36,7 @@ void Pawn::checkPieceInPath(Piece* board[64], vector<int>& legal_moves) {
 }
 
 // Check if there is a piece diagonally in front of the pawn
-void Pawn::checkPieceInAttackPath(Piece* board[64], int square,
-                                  vector<int>& legal_moves) {
+void Pawn::checkPieceInAttackPath(Piece* board[64], vector<int>& legal_moves) {
   // Pawns can only move in one direction
   int color_offset = this->getColor() == WHITE ? -1 : 1;
 
