@@ -50,6 +50,7 @@ void Pawn::checkPieceInAttackPath(Piece* board[64], vector<int>& legal_moves) {
       if (board[square] != nullptr &&
           this->getColor() != board[square]->getColor()) {
         legal_moves.push_back(square);
+        this->getPathMap()[directions[i]].push_back(square);
       }
     }
   }

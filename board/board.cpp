@@ -259,5 +259,43 @@ void Board::handleKingCheck() {
 
   if (king->isInCheck(board, pieces, pieces_attacking_king)) {
     cout << "King is in check" << endl;
+    this->updateMovesInCheck();
+  }
+}
+
+void Board::updateMovesInCheck() {
+  King *king = turn == WHITE ? white_king : black_king;
+  vector<int> moves_that_stop_check;
+
+  // Moves that stop check are moves that block the path to the king
+  for (Piece *piece : pieces_attacking_king) {
+    for (const int square : piece->getPathToKing(board, king)) {
+      moves_that_stop_check.push_back(square);
+    }
+  }
+
+  // Update legal moves that that they can only move to squares that stop check
+  for (Piece *piece : board) {
+    vector<int> new_legal_moves;
+    if (piece != nullptr && piece->getColor() == turn && !piece->isKing()) {
+      for (int move : piece->getLegalMoves()) {
+        // If there is a move in the pieces legal moves that stops check
+        // Add it to the new legal moves
+        if (find(moves_that_stop_check.begin(), moves_that_stop_check.end(),
+                 move) != moves_that_stop_check.end()) {
+          new_legal_moves.push_back(move);
+        }
+
+        // If the move can capture the piece attacking the king
+        for (Piece *attacking_piece : pieces_attacking_king) {
+          if (attacking_piece->getSquare() == move) {
+            new_legal_moves.push_back(move);
+          }
+        }
+      }
+
+      // Set the new legal moves for the piece
+      piece->setLegalMoves(new_legal_moves);
+    }
   }
 }

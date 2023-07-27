@@ -1,6 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <algorithm>
 #include <memory>
 #include <stack>
 #include <string>
@@ -57,6 +58,7 @@ class Board {
   void handleCastlingRights();
   void moveRookOnCastle();
   void handleKingCheck();
+  void updateMovesInCheck();
 };
 
 #endif

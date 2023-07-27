@@ -18,6 +18,8 @@ Piece::Piece(int square, char piece) {
 }
 
 void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
+  this->path_map.clear();
+
   // The offset from the current square to the next square on the diagonal
   int directions[4] = {-9, -7, 7, 9};
 
@@ -40,6 +42,7 @@ void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
 
       // If the square is empty or of the opposite color, add it to legal moves
       legal_moves.push_back(square);
+      this->path_map[directions[i]].push_back(square);
 
       // If piece is of the opposite color, stop looking in this direction
       if (board[square] != nullptr &&
@@ -51,6 +54,8 @@ void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
 }
 
 void Piece::getStraightMoves(Piece* board[64], vector<int>& legal_moves) {
+  this->path_map.clear();
+
   // The offset from the current square to the next square in each direction
   int directions[4] = {-8, 1, 8, -1};  // Up, Right, Down, Left
 
@@ -72,6 +77,7 @@ void Piece::getStraightMoves(Piece* board[64], vector<int>& legal_moves) {
 
       // If the square is empty or of the opposite color, add it to legal moves
       legal_moves.push_back(square);
+      this->path_map[directions[i]].push_back(square);
 
       // If piece is of the opposite color, stop looking in this direction
       if (board[square] != nullptr &&
@@ -90,4 +96,19 @@ bool Piece::isLegalMove(int square) {
   }
 
   return false;
+}
+
+vector<int> Piece::getPathToKing(Piece* board[64], Piece* king) {
+  // Loop through each direction in the path map
+  for (auto const& [direction, path] : this->path_map) {
+    // Loop through each square in the path
+    for (int square : path) {
+      // If the square is the king, return the path to the king
+      if (board[square] == king) {
+        return this->path_map[direction];
+      }
+    }
+  }
+
+  return {};
 }
