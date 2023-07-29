@@ -59,6 +59,7 @@ class Board {
   void moveRookOnCastle();
   void handleKingCheck();
   void updateMovesInCheck();
+  void updateMovesForPinnedPieces();
 };
 
 #endif

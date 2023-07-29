@@ -126,6 +126,7 @@ void Board::changeTurn() {
   this->setEnPassantSquare();
   this->handleKingCheck();
   this->handleCastlingRights();
+  this->updateMovesForPinnedPieces();
 }
 
 void Board::setEnPassantSquare() {
@@ -298,6 +299,66 @@ void Board::updateMovesInCheck() {
 
       // Set the new legal moves for the piece
       piece->setLegalMoves(new_legal_moves);
+    }
+  }
+}
+
+// This works for now but I do not like it
+// TODO: MAKE THIS BETTER
+void Board::updateMovesForPinnedPieces() {
+  King *king = turn == WHITE ? white_king : black_king;
+
+  vector<Piece *> not_turn_pieces = {};
+  vector<Piece *> turn_pieces = {};
+
+  for (Piece *piece : board) {
+    if (piece != nullptr) {
+      if (piece->getColor() == turn) {
+        turn_pieces.push_back(piece);
+      } else {
+        not_turn_pieces.push_back(piece);
+      }
+    }
+  }
+
+  for (Piece *piece : turn_pieces) {
+    if (piece->isKing()) {
+      continue;
+    }
+
+    pieces_attacking_king = {};
+
+    for (int move : piece->getLegalMoves()) {
+      int original_square = piece->getSquare();
+      Piece *original_piece = board[move];
+
+      // Temporarily move the piece
+      board[move] = piece;
+      board[original_square] = nullptr;
+      piece->setSquare(move);
+
+      // Update moves for opposite turn pieces
+      for (Piece *piece : not_turn_pieces) {
+        piece->updateLegalMoves(board);
+      }
+
+      // If the king is in check, remove the move
+      if (king->isInCheck(board, not_turn_pieces, pieces_attacking_king)) {
+        piece->removeLegalMove(move);
+      }
+
+      for (Piece *attacking_piece : pieces_attacking_king) {
+        for (int square : attacking_piece->getPathToKing(board, king)) {
+          if (square == move || move == attacking_piece->getSquare()) {
+            piece->addLegalMove(move);
+          }
+        }
+      }
+
+      // Move the piece back
+      board[move] = original_piece;
+      board[original_square] = piece;
+      piece->setSquare(original_square);
     }
   }
 }

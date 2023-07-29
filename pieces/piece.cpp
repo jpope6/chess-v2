@@ -110,3 +110,22 @@ vector<int> Piece::getPathToKing(Piece* board[64], Piece* king) {
 
   return {};
 }
+
+void Piece::addLegalMove(int square) {
+  for (int move : this->legal_moves) {
+    if (move == square) {
+      return;
+    }
+  }
+
+  this->legal_moves.push_back(square);
+}
+
+void Piece::removeLegalMove(int square) {
+  for (int i = 0; i < this->legal_moves.size(); i++) {
+    if (this->legal_moves[i] == square) {
+      this->legal_moves.erase(this->legal_moves.begin() + i);
+      return;
+    }
+  }
+}

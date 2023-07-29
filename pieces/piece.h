@@ -65,6 +65,8 @@ class Piece {
   void getStraightMoves(Piece* board[64], vector<int>& legal_moves);
   bool isLegalMove(int square);
   vector<int> getPathToKing(Piece* board[64], Piece* king);
+  void addLegalMove(int square);
+  void removeLegalMove(int square);
 
   bool isPawn() { return piece_type == PAWN; }
   bool isRook() { return piece_type == ROOK; }
