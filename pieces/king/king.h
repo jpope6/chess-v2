@@ -4,10 +4,10 @@
 #include "../piece.h"
 
 class King : public Piece {
- private:
+private:
   bool is_in_check;
 
- public:
+public:
   // Constructor
   King(int square, char piece);
 
@@ -15,16 +15,16 @@ class King : public Piece {
   bool getIsInCheck() { return is_in_check; }
 
   // Virtual functions
-  void updateLegalMoves(Piece* board[64]) override;
+  void updateLegalMoves(Piece *board[64]) override;
 
   // Member functions
-  void checkPieceInPath(Piece* board[64], vector<int>& legal_moves);
-  void setCastlingSquare(Piece* board[64], int rook_square,
-                         vector<Piece*>& pieces_attacking_king);
-  bool isInCheck(Piece* board[64], vector<Piece*>& pieces,
-                 vector<Piece*>& pieces_attacking_king);
-  bool isKingMovingThroughCheck(Piece* board[64], int to_square,
-                                vector<Piece*> pieces_attacking_king);
+  void checkPieceInPath(Piece *board[64], vector<int> &legal_moves);
+  void setCastlingSquare(Piece *board[64], int rook_square,
+                         vector<Piece *> &pieces_attacking_king);
+  bool isInCheck(Piece *board[64], vector<Piece *> &pieces,
+                 vector<Piece *> &pieces_attacking_king);
+  bool isKingMovingThroughCheck(Piece *board[64], int to_square,
+                                vector<Piece *> pieces_attacking_king);
 };
 
 #endif

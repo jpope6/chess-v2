@@ -26,11 +26,11 @@ void Board::setBoardWithFenString(string fen_string) {
 
   // Loop through the FEN board string
   for (char c : fen_board) {
-    if (c == '/') {  // If we reach the end of a row
+    if (c == '/') { // If we reach the end of a row
       row++;
       col = 0;
     } else {
-      if (isdigit(c)) {  // If the character is a number
+      if (isdigit(c)) { // If the character is a number
         int num = c - '0';
         col += num;
       } else {
@@ -44,29 +44,29 @@ void Board::setBoardWithFenString(string fen_string) {
 // Create a piece based on the character
 Piece *Board::createPiece(int square, char c) {
   switch (c) {
-    case 'P':
-    case 'p':
-      return new Pawn(square, c);
-    case 'R':
-    case 'r':
-      return new Rook(square, c);
-    case 'B':
-    case 'b':
-      return new Bishop(square, c);
-    case 'N':
-    case 'n':
-      return new Knight(square, c);
-    case 'Q':
-    case 'q':
-      return new Queen(square, c);
-    case 'K':
-      white_king = new King(square, c);
-      return white_king;
-    case 'k':
-      black_king = new King(square, c);
-      return black_king;
-    default:
-      return nullptr;  // Invalid piece character
+  case 'P':
+  case 'p':
+    return new Pawn(square, c);
+  case 'R':
+  case 'r':
+    return new Rook(square, c);
+  case 'B':
+  case 'b':
+    return new Bishop(square, c);
+  case 'N':
+  case 'n':
+    return new Knight(square, c);
+  case 'Q':
+  case 'q':
+    return new Queen(square, c);
+  case 'K':
+    white_king = new King(square, c);
+    return white_king;
+  case 'k':
+    black_king = new King(square, c);
+    return black_king;
+  default:
+    return nullptr; // Invalid piece character
   }
 }
 
@@ -262,7 +262,7 @@ void Board::handleKingCheck() {
 
   if (king->isInCheck(board, pieces, pieces_attacking_king)) {
     cout << "King is in check" << endl;
-    this->updateMovesInCheck();
+    // this->updateMovesInCheck();
   }
 }
 
@@ -352,6 +352,11 @@ void Board::updateMovesForPinnedPieces() {
           if (square == move || move == attacking_piece->getSquare()) {
             piece->addLegalMove(move);
           }
+        }
+
+        // If the move can capture the piece attacking the king
+        if (attacking_piece->getSquare() == move) {
+          piece->addLegalMove(move);
         }
       }
 

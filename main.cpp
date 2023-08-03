@@ -3,7 +3,7 @@
 #include "frame/frame.h"
 
 class App : public wxApp {
- public:
+public:
   bool OnInit() override;
 };
 

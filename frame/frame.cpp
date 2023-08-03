@@ -5,6 +5,8 @@ Frame::Frame()
   chessboard = Board();
   loadChessPieces();
 
+  SetClientSize(800, 800);
+
   mouse_x = 0;
   mouse_y = 0;
 
@@ -29,10 +31,12 @@ void Frame::loadChessPieces() {
 
     bool loadResult = bitmap.LoadFile(path, wxBITMAP_TYPE_PNG);
 
+    int square_size = GetClientSize().GetWidth() / 8;
+
     // Scale the image to 100x100
     if (loadResult) {
       wxImage image = bitmap.ConvertToImage();
-      image.Rescale(100, 100, wxIMAGE_QUALITY_HIGH);
+      image.Rescale(square_size, square_size, wxIMAGE_QUALITY_HIGH);
       bitmap = wxBitmap(image);
 
       chessPieceBitmaps[c] = bitmap;
