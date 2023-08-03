@@ -23,7 +23,7 @@ struct Move {
 };
 
 class Board {
-private:
+ private:
   string fen_string;
   Piece *board[64];
 
@@ -36,7 +36,7 @@ private:
 
   vector<Piece *> pieces_attacking_king;
 
-public:
+ public:
   // Constructor
   Board();
 
@@ -59,7 +59,9 @@ public:
   void moveRookOnCastle();
   void handleKingCheck();
   void updateMovesInCheck();
-  void updateMovesForPinnedPieces();
+  void updateMovesForCheckAndPins();
+  void updateKingMoves();
+  bool checkForCheckMate();
 };
 
 #endif

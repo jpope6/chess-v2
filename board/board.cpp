@@ -26,11 +26,11 @@ void Board::setBoardWithFenString(string fen_string) {
 
   // Loop through the FEN board string
   for (char c : fen_board) {
-    if (c == '/') { // If we reach the end of a row
+    if (c == '/') {  // If we reach the end of a row
       row++;
       col = 0;
     } else {
-      if (isdigit(c)) { // If the character is a number
+      if (isdigit(c)) {  // If the character is a number
         int num = c - '0';
         col += num;
       } else {
@@ -44,29 +44,29 @@ void Board::setBoardWithFenString(string fen_string) {
 // Create a piece based on the character
 Piece *Board::createPiece(int square, char c) {
   switch (c) {
-  case 'P':
-  case 'p':
-    return new Pawn(square, c);
-  case 'R':
-  case 'r':
-    return new Rook(square, c);
-  case 'B':
-  case 'b':
-    return new Bishop(square, c);
-  case 'N':
-  case 'n':
-    return new Knight(square, c);
-  case 'Q':
-  case 'q':
-    return new Queen(square, c);
-  case 'K':
-    white_king = new King(square, c);
-    return white_king;
-  case 'k':
-    black_king = new King(square, c);
-    return black_king;
-  default:
-    return nullptr; // Invalid piece character
+    case 'P':
+    case 'p':
+      return new Pawn(square, c);
+    case 'R':
+    case 'r':
+      return new Rook(square, c);
+    case 'B':
+    case 'b':
+      return new Bishop(square, c);
+    case 'N':
+    case 'n':
+      return new Knight(square, c);
+    case 'Q':
+    case 'q':
+      return new Queen(square, c);
+    case 'K':
+      white_king = new King(square, c);
+      return white_king;
+    case 'k':
+      black_king = new King(square, c);
+      return black_king;
+    default:
+      return nullptr;  // Invalid piece character
   }
 }
 
@@ -126,7 +126,12 @@ void Board::changeTurn() {
   this->setEnPassantSquare();
   this->handleKingCheck();
   this->handleCastlingRights();
-  this->updateMovesForPinnedPieces();
+  this->updateKingMoves();
+  this->updateMovesForCheckAndPins();
+
+  if (this->checkForCheckMate()) {
+    cout << "Checkmate" << endl;
+  }
 }
 
 void Board::setEnPassantSquare() {
@@ -305,7 +310,7 @@ void Board::updateMovesInCheck() {
 
 // This works for now but I do not like it
 // TODO: MAKE THIS BETTER
-void Board::updateMovesForPinnedPieces() {
+void Board::updateMovesForCheckAndPins() {
   King *king = turn == WHITE ? white_king : black_king;
 
   vector<Piece *> not_turn_pieces = {};
@@ -366,4 +371,61 @@ void Board::updateMovesForPinnedPieces() {
       piece->setSquare(original_square);
     }
   }
+}
+
+void Board::updateKingMoves() {
+  King *king = turn == WHITE ? white_king : black_king;
+
+  vector<Piece *> opposite_pieces = {};
+
+  for (Piece *piece : board) {
+    if (piece != nullptr && piece->getColor() != turn) {
+      opposite_pieces.push_back(piece);
+    }
+  }
+
+  int original_square = king->getSquare();
+
+  for (int move : king->getLegalMoves()) {
+    // Play the move
+    Piece *original_piece = board[move];
+
+    // Temporarily move the piece
+    board[move] = king;
+    board[original_square] = nullptr;
+    king->setSquare(move);
+
+    // Update moves for opposite turn pieces
+    for (Piece *piece : opposite_pieces) {
+      piece->updateLegalMoves(board);
+    }
+
+    if (king->isInCheck(board, opposite_pieces, pieces_attacking_king)) {
+      king->removeLegalMove(move);
+    }
+
+    // Move the piece back
+    board[move] = original_piece;
+    board[original_square] = king;
+    king->setSquare(original_square);
+  }
+}
+
+bool Board::checkForCheckMate() {
+  vector<Piece *> current_turn_pieces = {};
+
+  // Get pieces of current turn
+  for (Piece *piece : board) {
+    if (piece != nullptr && piece->getColor() == turn) {
+      current_turn_pieces.push_back(piece);
+    }
+  }
+
+  for (Piece *piece : current_turn_pieces) {
+    if (piece->getLegalMoves().size() > 0) {
+      return false;
+    }
+  }
+
+  return true;
 }

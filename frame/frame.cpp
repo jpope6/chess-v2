@@ -27,7 +27,7 @@ void Frame::loadChessPieces() {
     wxBitmap bitmap;
 
     // file path
-    string path = "frame/images/" + string(1, c) + ".png";
+    string path = "./frame/images/" + string(1, c) + ".png";
 
     bool loadResult = bitmap.LoadFile(path, wxBITMAP_TYPE_PNG);
 
