@@ -7,6 +7,12 @@ Frame::Frame()
 
   SetClientSize(800, 800);
 
+  // Create the promotion dialog
+  this->promotionDialog =
+      new wxDialog(this, wxID_ANY, "Promote Pawn", wxDefaultPosition);
+  this->promotionDialog->SetMinSize(wxSize(450, 160));
+  this->createPromotionDialog(this->promotionDialog);
+
   mouse_x = 0;
   mouse_y = 0;
 
@@ -42,6 +48,45 @@ void Frame::loadChessPieces() {
       chessPieceBitmaps[c] = bitmap;
     }
   }
+}
+
+void Frame::createPromotionDialog(wxDialog *dialog) {
+  wxPoint startPos(10, 10);
+  int buttonSize = 100;
+
+  // Chess piece images for both colors (WHITE and BLACK)
+  const vector<string> pieceNames = {"Q", "R", "B", "N"};
+
+  wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
+
+  for (size_t i = 0; i < pieceNames.size(); i++) {
+    string pieceName = pieceNames[i];
+
+    // Determine the path based on the current piece name and turn color
+    string path = this->chessboard.getTurn() == WHITE
+                      ? "./frame/images/" + pieceName + ".png"
+                      : "./frame/images/" + pieceName + ".png";
+
+    wxBitmap bmp(path, wxBITMAP_TYPE_PNG);
+    wxImage image = bmp.ConvertToImage();
+    image.Rescale(buttonSize, buttonSize, wxIMAGE_QUALITY_HIGH);
+    bmp = wxBitmap(image);
+
+    // Calculate the position of the button based on the index
+    wxPoint buttonPos(startPos.x + (i * (buttonSize + 10)), startPos.y);
+
+    // Create the button as a child of the dialog
+    wxButton *button = new wxButton(dialog, wxID_ANY, wxEmptyString, buttonPos,
+                                    wxSize(buttonSize, buttonSize));
+    button->SetBitmap(bmp);
+    sizer->Add(button, 0, wxALIGN_CENTER | wxALL, 5);
+  }
+
+  // Create a vertical box sizer to center the buttons vertically
+  wxBoxSizer *verticalCenterSizer = new wxBoxSizer(wxVERTICAL);
+  verticalCenterSizer->Add(sizer, 1, wxALIGN_CENTER | wxALL, 10);
+
+  dialog->SetSizerAndFit(verticalCenterSizer);
 }
 
 // Main drawing function

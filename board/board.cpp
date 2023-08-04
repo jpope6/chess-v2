@@ -429,3 +429,17 @@ bool Board::checkForCheckMate() {
 
   return true;
 }
+
+bool Board::isPawnPromoting() {
+  Move last_move = move_stack.top();
+
+  if (!last_move.piece->isPawn()) {
+    return false;
+  }
+
+  if (last_move.piece->getRow() != 0 || last_move.piece->getRow() != 7) {
+    return false;
+  }
+
+  return true;
+}

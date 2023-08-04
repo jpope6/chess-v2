@@ -2,6 +2,7 @@
 #define FRAME_H
 
 #include <wx/bitmap.h>
+#include <wx/dialog.h>
 #include <wx/image.h>
 #include <wx/wx.h>
 
@@ -17,6 +18,8 @@ class Frame : public wxFrame {
   map<char, wxBitmap> chessPieceBitmaps;
   Board chessboard;
 
+  wxDialog *promotionDialog;
+
   int mouse_x;
   int mouse_y;
 
@@ -30,6 +33,7 @@ class Frame : public wxFrame {
 
   // Member functions
   void loadChessPieces();
+  void createPromotionDialog(wxDialog *dialog);
 
   // Drawing functions
   void onPaint(wxPaintEvent &event);

@@ -62,6 +62,7 @@ class Board {
   void updateMovesForCheckAndPins();
   void updateKingMoves();
   bool checkForCheckMate();
+  bool isPawnPromoting();
 };
 
 #endif
