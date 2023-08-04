@@ -20,6 +20,7 @@ struct Move {
   int to_square;
   Piece *piece;
   Piece *captured_piece;
+  char captured_piece_type;
 };
 
 class Board {
@@ -64,6 +65,7 @@ public:
   bool checkForCheckMate();
   bool isPawnPromoting();
   void promotePawn(char c);
+  void undoLastMove();
 };
 
 #endif

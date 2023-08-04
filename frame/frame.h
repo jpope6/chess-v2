@@ -14,7 +14,7 @@
 using namespace std;
 
 class Frame : public wxFrame {
- private:
+private:
   map<char, wxBitmap> chessPieceBitmaps;
   Board chessboard;
 
@@ -27,7 +27,7 @@ class Frame : public wxFrame {
   Piece *selected_piece;
   int selected_piece_square;
 
- public:
+public:
   // Constructor
   Frame();
 
@@ -47,6 +47,7 @@ class Frame : public wxFrame {
   void onMouseMotion(wxMouseEvent &event);
 
   // Exit
+  void onPromotionDialogClose(wxCloseEvent &event);
   void onExit(wxCommandEvent &event);
 
   DECLARE_EVENT_TABLE()

@@ -84,9 +84,11 @@ void Board::handleMove(int from_square, int to_square) {
   // Move the piece
   if (board[to_square] != nullptr) {
     move.captured_piece = board[to_square];
+    move.captured_piece_type = board[to_square]->getName();
     delete board[to_square];
   } else {
     move.captured_piece = nullptr;
+    move.captured_piece_type = ' ';
   }
 
   board[to_square] = move.piece;
@@ -471,4 +473,25 @@ void Board::promotePawn(char c) {
   if (this->checkForCheckMate()) {
     cout << "Checkmate" << endl;
   }
+}
+
+void Board::undoLastMove() {
+  Move last_move = move_stack.top();
+
+  board[last_move.from_square] = last_move.piece;
+  board[last_move.to_square] = nullptr;
+  last_move.piece->setSquare(last_move.from_square);
+
+  if (last_move.captured_piece != nullptr) {
+    Piece *captured_piece =
+        createPiece(last_move.to_square, last_move.captured_piece_type);
+    board[last_move.to_square] = captured_piece;
+    captured_piece->setSquare(last_move.to_square);
+  }
+
+  last_move.piece->updateLegalMoves(board);
+
+  this->changeTurn();
+
+  move_stack.pop();
 }

@@ -102,6 +102,8 @@ void Frame::createPromotionDialog(wxDialog *dialog) {
   verticalCenterSizer->Add(sizer, 1, wxALIGN_CENTER | wxALL, 10);
 
   dialog->SetSizerAndFit(verticalCenterSizer);
+
+  dialog->Bind(wxEVT_CLOSE_WINDOW, &Frame::onPromotionDialogClose, this);
 }
 
 // Main drawing function
@@ -249,6 +251,13 @@ void Frame::onMouseMotion(wxMouseEvent &event) {
     // Refresh the screen
     Refresh();
   }
+}
+
+void Frame::onPromotionDialogClose(wxCloseEvent &event) {
+  chessboard.undoLastMove();
+  this->promotionDialog->EndModal(wxID_OK);
+  Refresh();
+  event.Skip(); // Allow further processing of the event
 }
 
 // Exit the application
