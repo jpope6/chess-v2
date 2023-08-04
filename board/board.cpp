@@ -26,11 +26,11 @@ void Board::setBoardWithFenString(string fen_string) {
 
   // Loop through the FEN board string
   for (char c : fen_board) {
-    if (c == '/') {  // If we reach the end of a row
+    if (c == '/') { // If we reach the end of a row
       row++;
       col = 0;
     } else {
-      if (isdigit(c)) {  // If the character is a number
+      if (isdigit(c)) { // If the character is a number
         int num = c - '0';
         col += num;
       } else {
@@ -44,29 +44,29 @@ void Board::setBoardWithFenString(string fen_string) {
 // Create a piece based on the character
 Piece *Board::createPiece(int square, char c) {
   switch (c) {
-    case 'P':
-    case 'p':
-      return new Pawn(square, c);
-    case 'R':
-    case 'r':
-      return new Rook(square, c);
-    case 'B':
-    case 'b':
-      return new Bishop(square, c);
-    case 'N':
-    case 'n':
-      return new Knight(square, c);
-    case 'Q':
-    case 'q':
-      return new Queen(square, c);
-    case 'K':
-      white_king = new King(square, c);
-      return white_king;
-    case 'k':
-      black_king = new King(square, c);
-      return black_king;
-    default:
-      return nullptr;  // Invalid piece character
+  case 'P':
+  case 'p':
+    return new Pawn(square, c);
+  case 'R':
+  case 'r':
+    return new Rook(square, c);
+  case 'B':
+  case 'b':
+    return new Bishop(square, c);
+  case 'N':
+  case 'n':
+    return new Knight(square, c);
+  case 'Q':
+  case 'q':
+    return new Queen(square, c);
+  case 'K':
+    white_king = new King(square, c);
+    return white_king;
+  case 'k':
+    black_king = new King(square, c);
+    return black_king;
+  default:
+    return nullptr; // Invalid piece character
   }
 }
 
@@ -431,15 +431,44 @@ bool Board::checkForCheckMate() {
 }
 
 bool Board::isPawnPromoting() {
-  Move last_move = move_stack.top();
-
-  if (!last_move.piece->isPawn()) {
+  if (move_stack.empty()) {
     return false;
   }
 
-  if (last_move.piece->getRow() != 0 || last_move.piece->getRow() != 7) {
+  Move last_move = move_stack.top();
+
+  if (!board[last_move.to_square]->isPawn()) {
+    return false;
+  }
+
+  if (last_move.piece->getRow() != 0 && last_move.piece->getRow() != 7) {
     return false;
   }
 
   return true;
+}
+
+void Board::promotePawn(char c) {
+  if (!isPawnPromoting()) {
+    return;
+  }
+
+  Move last_move = move_stack.top();
+
+  // Delete the pawn
+  board[last_move.to_square] = nullptr;
+  board[last_move.to_square] = this->createPiece(last_move.to_square, c);
+  board[last_move.to_square]->setSquare(last_move.to_square);
+
+  board[last_move.to_square]->updateLegalMoves(board);
+
+  // TODO: There might be a better way to do this here?
+  this->handleKingCheck();
+  this->handleCastlingRights();
+  this->updateKingMoves();
+  this->updateMovesForCheckAndPins();
+
+  if (this->checkForCheckMate()) {
+    cout << "Checkmate" << endl;
+  }
 }

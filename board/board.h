@@ -23,7 +23,7 @@ struct Move {
 };
 
 class Board {
- private:
+private:
   string fen_string;
   Piece *board[64];
 
@@ -36,7 +36,7 @@ class Board {
 
   vector<Piece *> pieces_attacking_king;
 
- public:
+public:
   // Constructor
   Board();
 
@@ -63,6 +63,7 @@ class Board {
   void updateKingMoves();
   bool checkForCheckMate();
   bool isPawnPromoting();
+  void promotePawn(char c);
 };
 
 #endif

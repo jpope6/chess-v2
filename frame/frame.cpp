@@ -50,22 +50,23 @@ void Frame::loadChessPieces() {
   }
 }
 
+// Create the Promotion Popup and bind the buttons to a promotion function
 void Frame::createPromotionDialog(wxDialog *dialog) {
   wxPoint startPos(10, 10);
   int buttonSize = 100;
 
   // Chess piece images for both colors (WHITE and BLACK)
-  const vector<string> pieceNames = {"Q", "R", "B", "N"};
+  vector<char> pieceNames = {'Q', 'R', 'B', 'N'};
 
   wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 
   for (size_t i = 0; i < pieceNames.size(); i++) {
-    string pieceName = pieceNames[i];
+    char pieceName = pieceNames[i];
 
     // Determine the path based on the current piece name and turn color
     string path = this->chessboard.getTurn() == WHITE
-                      ? "./frame/images/" + pieceName + ".png"
-                      : "./frame/images/" + pieceName + ".png";
+                      ? "./frame/images/" + string(1, pieceName) + ".png"
+                      : "./frame/images/" + string(1, pieceName) + ".png";
 
     wxBitmap bmp(path, wxBITMAP_TYPE_PNG);
     wxImage image = bmp.ConvertToImage();
@@ -79,6 +80,20 @@ void Frame::createPromotionDialog(wxDialog *dialog) {
     wxButton *button = new wxButton(dialog, wxID_ANY, wxEmptyString, buttonPos,
                                     wxSize(buttonSize, buttonSize));
     button->SetBitmap(bmp);
+
+    // Bind the button event to a lambda function that calls promotePawn with
+    // the pieceName
+    button->Bind(wxEVT_BUTTON,
+                 [this, pieceName, dialog](wxCommandEvent &event) {
+                   chessboard.promotePawn(pieceName);
+
+                   dialog->EndModal(wxID_OK);
+
+                   Refresh();
+
+                   event.Skip(); // Allow further processing of the event
+                 });
+
     sizer->Add(button, 0, wxALIGN_CENTER | wxALL, 5);
   }
 
@@ -196,8 +211,6 @@ void Frame::onMouseLeftDown(wxMouseEvent &event) {
   selected_piece_square = clicked_row * 8 + clicked_col;
   selected_piece = chessboard.getBoard()[selected_piece_square];
 
-  // selected_piece->updateLegalMoves(chessboard.getBoard());
-
   Refresh();
 }
 
@@ -221,6 +234,10 @@ void Frame::onMouseLeftUp(wxMouseEvent &event) {
   is_piece_selected = false;
   selected_piece = nullptr;
   selected_piece_square = -1;
+
+  if (chessboard.isPawnPromoting()) {
+    promotionDialog->ShowModal();
+  }
 }
 
 void Frame::onMouseMotion(wxMouseEvent &event) {
