@@ -78,6 +78,7 @@ string Board::generateFenString() {
   return fen_string;
 }
 
+// Add the current board position to the position occurences map
 void Board::addFenToMap(string fen_string) {
   this->position_occurences[fen_string]++;
 }
@@ -189,6 +190,30 @@ void Board::changeTurn() {
     cout << "Checkmate" << endl;
     turn = END_GAME;
   }
+}
+
+vector<Piece *> Board::getCurrentTurnPieces() {
+  vector<Piece *> current_turn_pieces = {};
+
+  for (Piece *piece : this->board) {
+    if (piece != nullptr && piece->getColor() == turn) {
+      current_turn_pieces.push_back(piece);
+    }
+  }
+
+  return current_turn_pieces;
+}
+
+vector<Piece *> Board::getNotCurrentTurnPieces() {
+  vector<Piece *> not_current_turn_pieces = {};
+
+  for (Piece *piece : this->board) {
+    if (piece != nullptr && piece->getColor() != turn) {
+      not_current_turn_pieces.push_back(piece);
+    }
+  }
+
+  return not_current_turn_pieces;
 }
 
 void Board::setEnPassantSquare() {
@@ -314,17 +339,10 @@ void Board::handleKingCheck() {
   King *king = turn == WHITE ? white_king : black_king;
 
   // Get all the pieces of the opposite color
-  std::vector<Piece *> pieces;
-
-  for (Piece *piece : board) {
-    if (piece != nullptr && piece->getColor() != turn) {
-      pieces.push_back(piece);
-    }
-  }
+  vector<Piece *> pieces = this->getNotCurrentTurnPieces();
 
   if (king->isInCheck(board, pieces, pieces_attacking_king)) {
     cout << "King is in check" << endl;
-    // this->updateMovesInCheck();
   }
 }
 
@@ -365,23 +383,12 @@ void Board::updateMovesInCheck() {
   }
 }
 
-// This works for now but I do not like it
 // TODO: MAKE THIS BETTER
 void Board::updateMovesForCheckAndPins() {
   King *king = turn == WHITE ? white_king : black_king;
 
-  vector<Piece *> not_turn_pieces = {};
-  vector<Piece *> turn_pieces = {};
-
-  for (Piece *piece : board) {
-    if (piece != nullptr) {
-      if (piece->getColor() == turn) {
-        turn_pieces.push_back(piece);
-      } else {
-        not_turn_pieces.push_back(piece);
-      }
-    }
-  }
+  vector<Piece *> not_turn_pieces = this->getNotCurrentTurnPieces();
+  vector<Piece *> turn_pieces = this->getCurrentTurnPieces();
 
   vector<Piece *> temp = pieces_attacking_king;
 
@@ -437,13 +444,7 @@ void Board::updateMovesForCheckAndPins() {
 void Board::updateKingMoves() {
   King *king = turn == WHITE ? white_king : black_king;
 
-  vector<Piece *> opposite_pieces = {};
-
-  for (Piece *piece : board) {
-    if (piece != nullptr && piece->getColor() != turn) {
-      opposite_pieces.push_back(piece);
-    }
-  }
+  vector<Piece *> opposite_pieces = this->getNotCurrentTurnPieces();
 
   int original_square = king->getSquare();
 
@@ -473,14 +474,7 @@ void Board::updateKingMoves() {
 }
 
 bool Board::checkForCheckMate() {
-  vector<Piece *> current_turn_pieces = {};
-
-  // Get pieces of current turn
-  for (Piece *piece : board) {
-    if (piece != nullptr && piece->getColor() == turn) {
-      current_turn_pieces.push_back(piece);
-    }
-  }
+  vector<Piece *> current_turn_pieces = this->getCurrentTurnPieces();
 
   for (Piece *piece : current_turn_pieces) {
     if (piece->getLegalMoves().size() > 0) {
@@ -537,6 +531,8 @@ void Board::promotePawn(char c) {
 void Board::undoLastMove() {
   Move last_move = move_stack.top();
 
+  string fen_string = this->generateFenString();
+
   board[last_move.from_square] = last_move.piece;
   board[last_move.to_square] = nullptr;
   last_move.piece->setSquare(last_move.from_square);
@@ -551,6 +547,8 @@ void Board::undoLastMove() {
   last_move.piece->updateLegalMoves(board);
 
   this->changeTurn();
+  this->position_occurences[fen_string]--;
+  this->position_occurences[this->generateFenString()]--;
   draw_counter--;
 
   move_stack.pop();
@@ -569,18 +567,8 @@ bool Board::hasThreefoldRepition() {
 bool Board::isStalemate() {
   King *king = turn == WHITE ? white_king : black_king;
 
-  vector<Piece *> not_turn_pieces = {};
-  vector<Piece *> turn_pieces = {};
-
-  for (Piece *piece : board) {
-    if (piece != nullptr) {
-      if (piece->getColor() == turn) {
-        turn_pieces.push_back(piece);
-      } else {
-        not_turn_pieces.push_back(piece);
-      }
-    }
-  }
+  vector<Piece *> not_turn_pieces = this->getNotCurrentTurnPieces();
+  vector<Piece *> turn_pieces = this->getCurrentTurnPieces();
 
   // If the king is in check, there is no stalemate
   if (king->isInCheck(this->board, not_turn_pieces,

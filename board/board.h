@@ -59,6 +59,8 @@ public:
   void handleMove(int from_square, int to_square);
   void updateMovesForAllPieces();
   void changeTurn();
+  vector<Piece *> getCurrentTurnPieces();
+  vector<Piece *> getNotCurrentTurnPieces();
   void addMoveToStack(Move move) { this->move_stack.push(move); }
   void setEnPassantSquare();
   void handleEnPassantCapture();
