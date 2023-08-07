@@ -1,11 +1,16 @@
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 cmake_minimum_required(VERSION 3.12)
 project(Chess)
 
 set(CMAKE_CXX_STANDARD 11)
 
-# Include the wxWidgets package
+# Set the path to the wxWidgets installation (where you built the static libraries)
+set(wxWidgets_ROOT_DIR "/home/jared/wxWidgets-3.2.2.1")
+
+# Enable using the statically linked version of wxWidgets
+set(WX_USE_STATIC ON)
+
+# Find wxWidgets
 find_package(wxWidgets REQUIRED COMPONENTS core base)
 include(${wxWidgets_USE_FILE})
 
