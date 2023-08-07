@@ -1,6 +1,8 @@
 # Chess
 This is a Chess application implemented in C++ using wxWidgets. The program allows you to play a game of Chess, following all the standard rules of Chess, and it also checks for draws and checkmates. It provides a graphical user interface (GUI) to facilitate an intuitive gameplay experience.
 
+NOTE: As of right now, this ONLY runs on Linux
+
 ## Features
 - Visualize all the legal moves for the piece the user clicks
 - Check for draws and checkmates to determine the games outcome
