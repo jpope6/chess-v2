@@ -17,7 +17,7 @@ Piece::Piece(int square, char piece) {
   this->has_moved = false;
 }
 
-void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
+void Piece::getDiagonalMoves(Piece *board[64], vector<int> &legal_moves) {
   // The offset from the current square to the next square on the diagonal
   int directions[4] = {-9, -7, 7, 9};
 
@@ -26,10 +26,10 @@ void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
       min(this->row, this->col), min(this->row, 7 - this->col),
       min(7 - this->row, this->col), min(7 - this->row, 7 - this->col)};
 
-  for (int i = 0; i < 4; i++) {  // For each direction
-    int square = this->square;   // Start at the current square
+  for (int i = 0; i < 4; i++) { // For each direction
+    int square = this->square;  // Start at the current square
     this->path_map[directions[i]] = {};
-    for (int j = 0; j < squares_until_edge[i]; j++) {  // For each square
+    for (int j = 0; j < squares_until_edge[i]; j++) { // For each square
       // Move to the next square on the diagonal
       square += directions[i];
 
@@ -52,18 +52,18 @@ void Piece::getDiagonalMoves(Piece* board[64], vector<int>& legal_moves) {
   }
 }
 
-void Piece::getStraightMoves(Piece* board[64], vector<int>& legal_moves) {
+void Piece::getStraightMoves(Piece *board[64], vector<int> &legal_moves) {
   // The offset from the current square to the next square in each direction
-  int directions[4] = {-8, 1, 8, -1};  // Up, Right, Down, Left
+  int directions[4] = {-8, 1, 8, -1}; // Up, Right, Down, Left
 
   // The number of squares until the edge of the board in each direction
   int squares_until_edge[4] = {this->row, 7 - this->col, 7 - this->row,
                                this->col};
 
-  for (int i = 0; i < 4; i++) {  // For each direction
-    int square = this->square;   // Start at the current square
+  for (int i = 0; i < 4; i++) { // For each direction
+    int square = this->square;  // Start at the current square
     this->path_map[directions[i]] = {};
-    for (int j = 0; j < squares_until_edge[i]; j++) {  // For each square
+    for (int j = 0; j < squares_until_edge[i]; j++) { // For each square
       // Move to the next square in the direction
       square += directions[i];
 
@@ -96,9 +96,11 @@ bool Piece::isLegalMove(int square) {
   return false;
 }
 
-vector<int> Piece::getPathToKing(Piece* board[64], Piece* king) {
+vector<int> Piece::getPathToKing(Piece *board[64], Piece *king) {
   // Loop through each direction in the path map
-  for (auto const& [direction, path] : this->path_map) {
+  for (auto const &entry : this->path_map) {
+    auto const &direction = entry.first;
+    auto const &path = entry.second;
     // Loop through each square in the path
     for (int square : path) {
       // If the square is the king, return the path to the king
