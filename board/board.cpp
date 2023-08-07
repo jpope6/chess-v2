@@ -1,11 +1,13 @@
 #include "board.h"
 
 #include <iostream>
+#include <string>
 
 Board::Board() {
   fen_string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
   turn = WHITE;
+  draw_counter = 0;
 
   // Set the starting board
   setBoardWithFenString(fen_string);
@@ -39,6 +41,45 @@ void Board::setBoardWithFenString(string fen_string) {
       }
     }
   }
+}
+
+string Board::generateFenString() {
+  string fen_string = "";
+  int empty_square_count = 0;
+
+  for (int row = 0; row <= 7; row++) {
+    for (int col = 0; col <= 7; col++) {
+      if (board[row * 8 + col] == nullptr) {
+        empty_square_count++;
+      } else {
+
+        if (empty_square_count > 0) {
+          fen_string += to_string(empty_square_count);
+          empty_square_count = 0;
+        }
+
+        fen_string += board[row * 8 + col]->getName();
+      }
+    }
+
+    // end of row
+    if (empty_square_count > 0) {
+      fen_string += to_string(empty_square_count);
+      empty_square_count = 0;
+    }
+
+    if (row < 7) {
+      fen_string += '/';
+    }
+  }
+
+  // TODO: add the rest of the fen string stuff
+
+  return fen_string;
+}
+
+void Board::addFenToMap(string fen_string) {
+  this->position_occurences[fen_string]++;
 }
 
 // Create a piece based on the character
@@ -81,11 +122,14 @@ void Board::handleMove(int from_square, int to_square) {
     return;
   }
 
+  this->draw_counter++;
+
   // Move the piece
   if (board[to_square] != nullptr) {
     move.captured_piece = board[to_square];
     move.captured_piece_type = board[to_square]->getName();
     delete board[to_square];
+    this->draw_counter = 0;
   } else {
     move.captured_piece = nullptr;
     move.captured_piece_type = ' ';
@@ -93,6 +137,11 @@ void Board::handleMove(int from_square, int to_square) {
 
   board[to_square] = move.piece;
   board[from_square] = nullptr;
+
+  // Pawn move resets draw count to 0
+  if (move.piece->isPawn()) {
+    this->draw_counter = 0;
+  }
 
   // Update the piece's square
   move.piece->setSquare(to_square);
@@ -124,6 +173,8 @@ void Board::changeTurn() {
     turn = WHITE;
   }
 
+  this->addFenToMap(this->generateFenString());
+
   this->updateMovesForAllPieces();
   this->setEnPassantSquare();
   this->handleKingCheck();
@@ -131,8 +182,12 @@ void Board::changeTurn() {
   this->updateKingMoves();
   this->updateMovesForCheckAndPins();
 
-  if (this->checkForCheckMate()) {
+  if (this->isDraw()) {
+    cout << "Draw" << endl;
+    turn = END_GAME;
+  } else if (this->checkForCheckMate()) {
     cout << "Checkmate" << endl;
+    turn = END_GAME;
   }
 }
 
@@ -328,6 +383,8 @@ void Board::updateMovesForCheckAndPins() {
     }
   }
 
+  vector<Piece *> temp = pieces_attacking_king;
+
   for (Piece *piece : turn_pieces) {
     if (piece->isKing()) {
       continue;
@@ -373,6 +430,8 @@ void Board::updateMovesForCheckAndPins() {
       piece->setSquare(original_square);
     }
   }
+
+  this->pieces_attacking_king = temp;
 }
 
 void Board::updateKingMoves() {
@@ -492,6 +551,67 @@ void Board::undoLastMove() {
   last_move.piece->updateLegalMoves(board);
 
   this->changeTurn();
+  draw_counter--;
 
   move_stack.pop();
+}
+
+bool Board::hasThreefoldRepition() {
+  for (const auto &position : this->position_occurences) {
+    if (position.second >= 3) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool Board::isStalemate() {
+  King *king = turn == WHITE ? white_king : black_king;
+
+  vector<Piece *> not_turn_pieces = {};
+  vector<Piece *> turn_pieces = {};
+
+  for (Piece *piece : board) {
+    if (piece != nullptr) {
+      if (piece->getColor() == turn) {
+        turn_pieces.push_back(piece);
+      } else {
+        not_turn_pieces.push_back(piece);
+      }
+    }
+  }
+
+  // If the king is in check, there is no stalemate
+  if (king->isInCheck(this->board, not_turn_pieces,
+                      this->pieces_attacking_king)) {
+    return false;
+  }
+
+  for (Piece *piece : turn_pieces) {
+    if (!piece->getLegalMoves().empty()) {
+      return false;
+    }
+  }
+
+  // If the king is not in check and has no legal moves, it's a stalemate
+  return true;
+}
+
+bool Board::isDraw() {
+  if (this->hasThreefoldRepition()) {
+    return true;
+  }
+
+  if (this->isStalemate()) {
+    return true;
+  }
+
+  // The 50 move rule. It checks if it is at 100 because it is counting half
+  // moves
+  if (this->draw_counter == 100) {
+    return true;
+  }
+
+  return false;
 }

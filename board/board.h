@@ -5,6 +5,7 @@
 #include <memory>
 #include <stack>
 #include <string>
+#include <unordered_map>
 
 #include "../pieces/bishop/bishop.h"
 #include "../pieces/king/king.h"
@@ -26,6 +27,7 @@ struct Move {
 class Board {
 private:
   string fen_string;
+  unordered_map<string, int> position_occurences;
   Piece *board[64];
 
   stack<Move> move_stack;
@@ -36,6 +38,8 @@ private:
   King *black_king;
 
   vector<Piece *> pieces_attacking_king;
+
+  int draw_counter;
 
 public:
   // Constructor
@@ -49,6 +53,8 @@ public:
 
   // Member functions
   void setBoardWithFenString(string fen_string);
+  string generateFenString();
+  void addFenToMap(string fen_string);
   Piece *createPiece(int square, char c);
   void handleMove(int from_square, int to_square);
   void updateMovesForAllPieces();
@@ -66,6 +72,9 @@ public:
   bool isPawnPromoting();
   void promotePawn(char c);
   void undoLastMove();
+  bool hasThreefoldRepition();
+  bool isStalemate();
+  bool isDraw();
 };
 
 #endif

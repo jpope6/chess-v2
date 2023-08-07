@@ -8,14 +8,14 @@
 
 using namespace std;
 
-enum Color { WHITE = 0, BLACK = 1 };
+enum Color { WHITE = 0, BLACK = 1, END_GAME = 2 };
 
 enum Type { PAWN = 0, KNIGHT = 1, BISHOP = 2, ROOK = 3, QUEEN = 4, KING = 5 };
 
 enum Column { A = 0, B = 1, C = 2, D = 3, E = 4, F = 5, G = 6, H = 7 };
 
 class Piece {
- private:
+private:
   int row;
   int col;
   int square;
@@ -28,7 +28,7 @@ class Piece {
   map<int, vector<int>> path_map;
   map<int, int[8]> num_squares_to_edge;
 
- public:
+public:
   // Constructor
   Piece(int square, char piece);
 
@@ -57,14 +57,14 @@ class Piece {
   void setHasMoved(bool has_moved) { this->has_moved = has_moved; }
 
   // Virtual functions
-  virtual void updateLegalMoves(Piece* board[64]) = 0;
+  virtual void updateLegalMoves(Piece *board[64]) = 0;
 
   // Member functions
   void numSquaresToEdge();
-  void getDiagonalMoves(Piece* board[64], vector<int>& legal_moves);
-  void getStraightMoves(Piece* board[64], vector<int>& legal_moves);
+  void getDiagonalMoves(Piece *board[64], vector<int> &legal_moves);
+  void getStraightMoves(Piece *board[64], vector<int> &legal_moves);
   bool isLegalMove(int square);
-  vector<int> getPathToKing(Piece* board[64], Piece* king);
+  vector<int> getPathToKing(Piece *board[64], Piece *king);
   void addLegalMove(int square);
   void removeLegalMove(int square);
 
