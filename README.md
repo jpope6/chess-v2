@@ -1,11 +1,11 @@
 # Chess
 This is a Chess application implemented in C++ using wxWidgets. The program allows you to play a game of Chess, following all the standard rules of Chess, and it also checks for draws and checkmates. It provides a graphical user interface (GUI) to facilitate an intuitive gameplay experience.
 
-NOTE: As of right now, this ONLY runs on Linux
+NOTE: You'll need wxWidgets installed on your machine for this to run. For instructions on downloading wxWidgets on Linux click [here](https://wiki.wxwidgets.org/Compiling_and_getting_started)
 
 ## Features
 - Visualize all the legal moves for the piece the user clicks
-- Check for draws and checkmates to determine the games outcome
+- Check for draws and checkmates to determine the outcome of the game
 - Convenient GUI for easy interaction with the pieces
 
 ## Build Instructions
@@ -14,26 +14,9 @@ NOTE: As of right now, this ONLY runs on Linux
 git clone https://github.com/jpope6/chess-v2.git
 cd chess-v2
 ```
-2. Create a build directory and navigate to it
+2. Compile and run the script
 ```bash
-mkdir build
-cd build
-```
-3. Generate build files using CMAKE
-```bash
-cmake ..
-```
-4. Build the application
-```bash
-make
-```
-5. Return to the root directory
-```bash
-cd ..
-```
-6. Run the application
-```
-./main
+./r.sh
 ```
 
 ## Future plans
