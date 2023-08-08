@@ -33,7 +33,7 @@ void Frame::loadChessPieces() {
     wxBitmap bitmap;
 
     // file path
-    string path = "./frame/images/" + string(1, c) + ".png";
+    string path = "./src/frame/images/" + string(1, c) + ".png";
 
     bool loadResult = bitmap.LoadFile(path, wxBITMAP_TYPE_PNG);
 
@@ -65,8 +65,8 @@ void Frame::createPromotionDialog(wxDialog *dialog) {
 
     // Determine the path based on the current piece name and turn color
     string path = this->chessboard.getTurn() == WHITE
-                      ? "./frame/images/" + string(1, pieceName) + ".png"
-                      : "./frame/images/" + string(1, pieceName) + ".png";
+                      ? "./src/frame/images/" + string(1, pieceName) + ".png"
+                      : "./src/frame/images/" + string(1, pieceName) + ".png";
 
     wxBitmap bmp(path, wxBITMAP_TYPE_PNG);
     wxImage image = bmp.ConvertToImage();
