@@ -240,6 +240,10 @@ void Frame::onMouseLeftUp(wxMouseEvent &event) {
   if (chessboard.isPawnPromoting()) {
     promotionDialog->ShowModal();
   }
+
+  if (this->chessboard.makeBotMove()) {
+    Refresh();
+  }
 }
 
 void Frame::onMouseMotion(wxMouseEvent &event) {

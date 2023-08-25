@@ -3,6 +3,9 @@
 echo "Compiling frame.cpp"
 g++ -c src/frame/frame.cpp `wx-config --cxxflags --libs`
 
+echo "Compiling bot.cpp"
+g++ -c src/bot/bot.cpp `wx-config --cxxflags --libs`
+
 echo "Compiling board.cpp"
 g++ -c src/board/board.cpp `wx-config --cxxflags --libs`
 
@@ -31,7 +34,7 @@ echo "Compiling main.cpp"
 g++ -c src/main.cpp `wx-config --cxxflags --libs`
 
 echo "Linking main.o"
-g++ -o main main.o frame.o board.o piece.o pawn.o rook.o bishop.o knight.o queen.o king.o `wx-config --cxxflags --libs`
+g++ -o main main.o frame.o bot.o board.o piece.o pawn.o rook.o bishop.o knight.o queen.o king.o `wx-config --cxxflags --libs`
 
 echo "Running main.o"
 ./main

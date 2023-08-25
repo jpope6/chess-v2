@@ -9,6 +9,9 @@ Board::Board() {
   turn = WHITE;
   draw_counter = 0;
 
+  bot = Bot();
+  bot_color = BLACK;
+
   // Set the starting board
   setBoardWithFenString(fen_string);
   updateMovesForAllPieces();
@@ -602,4 +605,15 @@ bool Board::isDraw() {
   }
 
   return false;
+}
+
+bool Board::makeBotMove() {
+  if (this->turn != this->bot_color) {
+    return false;
+  }
+
+  pair<int, int> pair = this->bot.makeMove(this->getCurrentTurnPieces());
+  this->handleMove(pair.first, pair.second);
+
+  return true;
 }

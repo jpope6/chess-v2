@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "../bot/bot.h"
 #include "../pieces/bishop/bishop.h"
 #include "../pieces/king/king.h"
 #include "../pieces/knight/knight.h"
@@ -41,6 +42,9 @@ private:
 
   int draw_counter;
 
+  Bot bot;
+  Color bot_color;
+
 public:
   // Constructor
   Board();
@@ -50,6 +54,7 @@ public:
   Piece **getBoard() { return board; }
   stack<Move> getMoveStack() { return move_stack; }
   Color getTurn() { return turn; }
+  Bot getBot() { return bot; }
 
   // Member functions
   void setBoardWithFenString(string fen_string);
@@ -77,6 +82,7 @@ public:
   bool hasThreefoldRepition();
   bool isStalemate();
   bool isDraw();
+  bool makeBotMove();
 };
 
 #endif
