@@ -612,7 +612,11 @@ bool Board::makeBotMove() {
     return false;
   }
 
-  pair<int, int> pair = this->bot.makeMove(this->getCurrentTurnPieces());
+  pair<int, int> pair =
+      this->bot.makeMove(this->board, this->getCurrentTurnPieces());
+
+  cout << pair.first << ", " << pair.second << endl;
+
   this->handleMove(pair.first, pair.second);
 
   return true;
