@@ -4,18 +4,21 @@
 #include <wx/bitmap.h>
 #include <wx/dialog.h>
 #include <wx/image.h>
+#include <wx/timer.h>
 #include <wx/wx.h>
 
 #include <map>
 #include <string>
+#include <utility>
 
-#include "../board/board.h"
+#include "../bot/bot.h"
 
 using namespace std;
 
 class Frame : public wxFrame {
 private:
   map<char, wxBitmap> chessPieceBitmaps;
+  Bot bot;
   Board chessboard;
 
   wxDialog *promotionDialog;
@@ -26,6 +29,9 @@ private:
   bool is_piece_selected;
   Piece *selected_piece;
   int selected_piece_square;
+
+  wxTimer *timer;
+  bool bot_move_made;
 
 public:
   // Constructor
@@ -45,6 +51,9 @@ public:
   void onMouseLeftDown(wxMouseEvent &event);
   void onMouseLeftUp(wxMouseEvent &event);
   void onMouseMotion(wxMouseEvent &event);
+
+  // Timer event
+  void onTimer(wxTimerEvent &event);
 
   // Exit
   void onPromotionDialogClose(wxCloseEvent &event);

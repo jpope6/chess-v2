@@ -2,7 +2,8 @@
 
 Frame::Frame()
     : wxFrame(nullptr, wxID_ANY, "Chess", wxDefaultPosition, wxSize(800, 837)) {
-  chessboard = Board();
+  this->bot = Bot();
+  chessboard = this->bot.getBoard();
   loadChessPieces();
 
   SetClientSize(800, 800);
@@ -20,8 +21,14 @@ Frame::Frame()
   selected_piece = nullptr;
   selected_piece_square = -1;
 
+  timer = new wxTimer(this, wxID_ANY);
+  this->bot_move_made = false;
+
   Bind(wxEVT_PAINT, &Frame::onPaint, this);
   Bind(wxEVT_MENU, &Frame::onExit, this, wxID_EXIT);
+  Bind(wxEVT_TIMER, &Frame::onTimer, this);
+
+  timer->Start(1000);
 }
 
 // Load the chess piece images
@@ -190,6 +197,10 @@ void Frame::drawActivePiece(wxPaintDC &dc) {
 }
 
 void Frame::onMouseLeftDown(wxMouseEvent &event) {
+  if (this->bot.getColor() == this->chessboard.getTurn()) {
+    return;
+  }
+
   mouse_x = event.GetX();
   mouse_y = event.GetY();
 
@@ -241,9 +252,7 @@ void Frame::onMouseLeftUp(wxMouseEvent &event) {
     promotionDialog->ShowModal();
   }
 
-  if (this->chessboard.makeBotMove()) {
-    Refresh();
-  }
+  this->bot_move_made = false;
 }
 
 void Frame::onMouseMotion(wxMouseEvent &event) {
@@ -254,6 +263,25 @@ void Frame::onMouseMotion(wxMouseEvent &event) {
 
     // Refresh the screen
     Refresh();
+  }
+}
+
+void Frame::onTimer(wxTimerEvent &event) {
+  // Check if it's the bot's turn
+  if (this->chessboard.getTurn() == this->bot.getColor() &&
+      !this->bot_move_made) {
+    this->bot_move_made = true;
+    cout << "running" << endl;
+
+    // Call the bot's makeMove function
+    pair<int, int> move = this->bot.makeMove();
+    this->chessboard.handleMove(move.first, move.second);
+    this->bot.setChessboard();
+
+    // Refresh
+    Refresh();
+
+    this->bot_move_made = false;
   }
 }
 

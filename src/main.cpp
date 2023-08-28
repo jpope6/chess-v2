@@ -17,4 +17,5 @@ wxIMPLEMENT_APP(App);
 
 wxBEGIN_EVENT_TABLE(Frame, wxFrame) EVT_PAINT(Frame::onPaint)
     EVT_LEFT_DOWN(Frame::onMouseLeftDown) EVT_LEFT_UP(Frame::onMouseLeftUp)
-        EVT_MOTION(Frame::onMouseMotion) wxEND_EVENT_TABLE()
+        EVT_MOTION(Frame::onMouseMotion) EVT_TIMER(wxID_ANY, Frame::onTimer)
+            wxEND_EVENT_TABLE()
